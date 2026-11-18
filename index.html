@@ -1,0 +1,2996 @@
+<!DOCTYPE html>
+<html lang="id" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0" />
+  <title>YOMAN START — Tutorial • Game • Solusi Error</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@700;800;900&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg-primary: #09090b;
+      --bg-secondary: #121217;
+      --bg-card: rgba(24, 24, 32, 0.85);
+      --border-color: rgba(255, 255, 255, 0.11);
+      --text-primary: #f8fafc;
+      --text-muted: #94a3b8;
+      --accent-1: #22d3ee;
+      --accent-2: #8b5cf6;
+      --input-bg: #181820;
+    }
+    [data-theme="light"] {
+      --bg-primary: #f1f5f9;
+      --bg-secondary: #ffffff;
+      --bg-card: rgba(255, 255, 255, 0.96);
+      --border-color: rgba(15, 23, 42, 0.13);
+      --text-primary: #0f172a;
+      --text-muted: #475569;
+      --accent-1: #0284c7;
+      --accent-2: #7c3aed;
+      --input-bg: #f8fafc;
+    }
+    [data-theme="cyberpunk"] {
+      --bg-primary: #070312;
+      --bg-secondary: #110726;
+      --bg-card: rgba(25, 11, 52, 0.88);
+      --border-color: rgba(244, 63, 94, 0.35);
+      --text-primary: #fdf4ff;
+      --text-muted: #d8b4fe;
+      --accent-1: #f43f5e;
+      --accent-2: #06b6d4;
+      --input-bg: #170a30;
+    }
+    * { box-sizing: border-box; }
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background-color: var(--bg-primary);
+      color: var(--text-primary);
+      transition: background-color 0.25s ease, color 0.25s ease;
+      overflow-x: hidden;
+    }
+    h1, h2, h3, .font-display { font-family: 'Plus Jakarta Sans', sans-serif; }
+    input, textarea, select { font-size: 16px !important; } /* Anti auto-zoom iOS Safari */
+    button, a.touch-target { min-height: 40px; }
+    .theme-surface { background-color: var(--bg-secondary); border-color: var(--border-color); }
+    .theme-card { background-color: var(--bg-card); border: 1px solid var(--border-color); }
+    .theme-input { background-color: var(--input-bg); border: 1px solid var(--border-color); color: var(--text-primary); }
+    .theme-text-muted { color: var(--text-muted); }
+    .theme-accent-text { color: var(--accent-1); }
+    .accent-gradient { background: linear-gradient(135deg, var(--accent-1), var(--accent-2)); }
+    .accent-glow { box-shadow: 0 10px 30px -8px rgba(34, 211, 238, 0.32); }
+    .theme-tab-active { background: linear-gradient(135deg, var(--accent-1), var(--accent-2)); color: #ffffff !important; font-weight: 700; }
+    .theme-tab-inactive { color: var(--text-muted); }
+    .theme-tab-inactive:hover { background-color: rgba(148, 163, 184, 0.14); color: var(--text-primary); }
+    @keyframes slideDownFade {
+      from { opacity: 0; transform: translateY(-8px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .wa-notif-enter { animation: slideDownFade 0.3s ease-out forwards; }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col">
+
+  <!-- ==================== OVERLAY PEMBLOKIRAN AKUN ==================== -->
+  <div id="bannedOverlay" class="hidden fixed inset-0 z-[100] bg-black/95 backdrop-blur-lg flex items-center justify-center p-4">
+    <div class="max-w-md w-full rounded-3xl bg-zinc-950 border-2 border-red-500/70 p-7 text-center space-y-5 shadow-2xl">
+      <div class="w-16 h-16 rounded-2xl bg-red-500/20 text-red-500 border border-red-500/40 mx-auto flex items-center justify-center text-3xl font-black">!</div>
+      <div class="space-y-2">
+        <span class="px-3 py-1 rounded-full text-xs font-extrabold bg-red-500/20 text-red-400 border border-red-500/40">AKUN DIBLOKIR (SUSPENDED)</span>
+        <h2 class="font-display text-2xl font-extrabold text-white pt-1">Akses Akun Dibatasi</h2>
+        <p class="text-sm text-zinc-300 leading-relaxed">
+          Halo <strong id="bannedAccountName" class="text-red-400"></strong>, akun Anda telah diblokir oleh Developer YOMAN START dan seluruh mod Anda disembunyikan sementara dari publik.
+        </p>
+      </div>
+      <div class="p-4 rounded-2xl bg-red-950/40 border border-red-500/30 text-left text-xs space-y-1">
+        <p class="font-bold text-red-400 uppercase tracking-wider">Alasan Pemblokiran:</p>
+        <p id="bannedAccountReason" class="text-zinc-200 leading-relaxed"></p>
+      </div>
+      <button onclick="logoutBannedUser()" class="w-full py-3 rounded-xl font-bold text-sm text-white bg-red-600 hover:bg-red-500 transition">
+        Keluar dari Akun Ini
+      </button>
+    </div>
+  </div>
+
+  <!-- ==================== NAVBAR UTAMA ==================== -->
+  <header class="sticky top-0 z-40 theme-surface border-b backdrop-blur-xl">
+    <div class="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 h-16 sm:h-20 flex items-center justify-between gap-2">
+
+      <!-- Brand & Logo Resmi YOMAN START -->
+      <button onclick="switchPage('lobi')" class="flex items-center gap-2.5 text-left group shrink-0">
+        <div class="w-11 h-11 sm:w-12 sm:h-12 rounded-xl overflow-hidden border border-white/15 bg-black flex items-center justify-center shrink-0">
+          <img class="ys-logo-img w-full h-full object-contain" alt="Logo YOMAN START" />
+        </div>
+        <div class="hidden xl:block">
+          <span id="siteBrandTitleNav" class="font-display font-extrabold text-base tracking-tight block leading-none">YOMAN START</span>
+          <span id="siteBrandTaglineNav" class="text-[10px] theme-text-muted font-semibold tracking-wider uppercase">TUTORIAL • GAME • SOLUSI ERROR</span>
+        </div>
+      </button>
+
+      <!-- Navigasi Halaman Utama -->
+      <nav class="hidden lg:flex items-center gap-1 p-1 rounded-2xl theme-input shrink-0">
+        <button onclick="switchPage('lobi')" data-nav="lobi" class="nav-tab-btn px-3.5 py-2 rounded-xl text-xs font-semibold transition">Home / Lobi</button>
+        <button onclick="switchPage('download-game')" data-nav="download-game" class="nav-tab-btn px-3.5 py-2 rounded-xl text-xs font-semibold transition">Download Game PC</button>
+        <button onclick="switchPage('jelajah-mod')" data-nav="jelajah-mod" class="nav-tab-btn px-3.5 py-2 rounded-xl text-xs font-semibold transition">Jelajah Mod</button>
+        <button onclick="switchPage('info-masukan')" data-nav="info-masukan" class="nav-tab-btn px-3.5 py-2 rounded-xl text-xs font-semibold transition">Info &amp; Masukan</button>
+      </nav>
+
+      <!-- Global Smart Fuzzy Search (Pojok Kanan Atas) -->
+      <div class="relative flex-1 max-w-xs sm:max-w-sm">
+        <div class="relative">
+          <input
+            type="search"
+            id="globalFuzzySearchInput"
+            oninput="handleGlobalFuzzySearch(this.value)"
+            onfocus="handleGlobalFuzzySearch(this.value)"
+            placeholder="Cari mod/game (toleran typo)..."
+            class="w-full pl-9 pr-3 py-2 rounded-xl theme-input text-xs sm:text-sm focus:outline-none focus:border-cyan-500"
+          />
+          <svg class="w-4 h-4 theme-text-muted absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-4.35-4.35M17 11A6 6 0 115 11a6 6 0 0112 0z" />
+          </svg>
+        </div>
+        <div id="globalSearchDropdown" class="hidden absolute left-0 right-0 mt-2 rounded-2xl theme-surface border shadow-2xl overflow-hidden z-50 max-h-80 overflow-y-auto"></div>
+      </div>
+
+      <!-- Kontrol Kanan: Tombol Dev Control, Lonceng Developer, Profil/Login, Tema -->
+      <div class="flex items-center gap-1.5 sm:gap-2 shrink-0">
+
+        <!-- Tombol Cepat Dev Control (Eksklusif Super Developer & Co-Developer) -->
+        <button
+          id="navbarDevControlBtn"
+          onclick="openDevDashboard('analytics')"
+          class="hidden items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-extrabold bg-amber-400 text-zinc-950 hover:bg-amber-300 transition shadow-md"
+          title="Buka Developer Control Center"
+        >
+          <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" stroke-width="2.4" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><circle cx="12" cy="12" r="3"/></svg>
+          <span class="hidden sm:inline">Dev Control</span>
+        </button>
+
+        <!-- Lonceng Notifikasi Developer & Kreator Centang Biru -->
+        <div id="notifBellContainer" class="hidden relative">
+          <button
+            id="notifBellTrigger"
+            onclick="toggleNotificationsDropdown()"
+            class="relative w-10 h-10 rounded-xl theme-card flex items-center justify-center hover:border-amber-400 transition"
+            aria-label="Notifikasi Masuk"
+          >
+            <svg class="w-5 h-5 text-amber-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
+            </svg>
+            <span id="notifBellBadge" class="hidden absolute -top-1 -right-1 min-w-[18px] h-[18px] px-1 rounded-full bg-red-500 text-white text-[10px] font-extrabold flex items-center justify-center">0</span>
+          </button>
+
+          <div id="notifBellDropdown" class="hidden absolute right-0 mt-2 w-80 sm:w-96 rounded-2xl theme-surface border shadow-2xl z-50 overflow-hidden">
+            <div class="px-4 py-3 border-b border-white/10 flex items-center justify-between">
+              <span class="text-xs font-extrabold text-amber-400">Notifikasi Aktivitas &amp; Request</span>
+              <button onclick="markAllNotifsRead()" class="text-[11px] theme-accent-text hover:underline min-h-0">Tandai Dibaca</button>
+            </div>
+            <div id="notifDropdownList" class="max-h-72 overflow-y-auto divide-y divide-white/10"></div>
+          </div>
+        </div>
+
+        <!-- Area Auth / Profil Dropdown -->
+        <div id="authHeaderContainer" class="flex items-center gap-2"></div>
+
+        <!-- Pengaturan Tema Cepat -->
+        <button
+          onclick="openModal('themeModal')"
+          aria-label="Pengaturan Tema"
+          class="w-10 h-10 rounded-xl theme-card flex items-center justify-center hover:border-cyan-400/60 transition"
+          title="Ganti Tema Tampilan"
+        >
+          <svg class="w-5 h-5 theme-accent-text" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
+          </svg>
+        </button>
+
+        <!-- Menu Mobile -->
+        <button
+          onclick="toggleMobileMenu()"
+          aria-label="Menu Navigasi"
+          class="lg:hidden w-10 h-10 rounded-xl theme-card flex items-center justify-center"
+        >
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16" />
+          </svg>
+        </button>
+      </div>
+    </div>
+
+    <!-- Drawer Navigasi Mobile -->
+    <div id="mobileMenu" class="hidden lg:hidden theme-surface border-t px-4 py-3 space-y-1.5">
+      <button onclick="switchPage('lobi'); toggleMobileMenu();" data-nav="lobi" class="nav-tab-btn w-full text-left px-4 py-2.5 rounded-xl text-sm font-semibold">Home / Lobi</button>
+      <button onclick="switchPage('download-game'); toggleMobileMenu();" data-nav="download-game" class="nav-tab-btn w-full text-left px-4 py-2.5 rounded-xl text-sm font-semibold">Tempat Download Game PC</button>
+      <button onclick="switchPage('jelajah-mod'); toggleMobileMenu();" data-nav="jelajah-mod" class="nav-tab-btn w-full text-left px-4 py-2.5 rounded-xl text-sm font-semibold">Jelajah Mod</button>
+      <button onclick="switchPage('info-masukan'); toggleMobileMenu();" data-nav="info-masukan" class="nav-tab-btn w-full text-left px-4 py-2.5 rounded-xl text-sm font-semibold">Info &amp; Masukan</button>
+    </div>
+  </header>
+
+  <!-- ==================== KONTEN HALAMAN SPA TERISOLASI ==================== -->
+  <main class="flex-1">
+
+    <!-- 1. HALAMAN HOME / LOBI -->
+    <section id="page-lobi" class="page-view max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-14 space-y-12">
+      <div class="theme-card rounded-3xl p-6 sm:p-12 relative overflow-hidden">
+        <div class="max-w-3xl space-y-5 relative z-10">
+          <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-bold bg-cyan-500/15 theme-accent-text border border-cyan-500/30">
+            <span class="w-2 h-2 rounded-full bg-cyan-400 animate-pulse"></span>
+            <span id="heroBadgeTagline">TUTORIAL • GAME • SOLUSI ERROR</span>
+          </div>
+
+          <div class="flex items-center gap-4">
+            <img class="ys-logo-img w-16 h-16 sm:w-20 sm:h-20 rounded-2xl border border-white/15 bg-black object-contain shrink-0" alt="YOMAN START" />
+            <h1 id="heroMainTitle" class="font-display text-3xl sm:text-5xl font-extrabold tracking-tight leading-tight">
+              Portal Game PC, Mod Komunitas &amp; Solusi Error
+            </h1>
+          </div>
+
+          <p id="heroSubDescription" class="text-sm sm:text-lg theme-text-muted leading-relaxed">
+            Temukan direktori game PC pre-installed siap main, bagikan mod karya Anda bersama komunitas, ajukan request mod, dan dapatkan solusi error teknis secara terstruktur.
+          </p>
+
+          <div class="flex flex-wrap items-center gap-3 pt-2">
+            <button onclick="switchPage('download-game')" class="px-5 py-3 rounded-xl font-bold text-sm text-white accent-gradient accent-glow hover:opacity-95 transition">
+              Download Game PC
+            </button>
+            <button onclick="switchPage('jelajah-mod')" class="px-5 py-3 rounded-xl font-bold text-sm theme-card hover:border-cyan-400 transition">
+              Jelajah &amp; Upload Mod
+            </button>
+            <button onclick="openRequestModModal()" class="px-5 py-3 rounded-xl font-bold text-sm bg-violet-600/20 text-violet-300 border border-violet-500/40 hover:bg-violet-600/30 transition">
+              + Request Mod / Game
+            </button>
+            <a id="communityJoinLinkBtn" href="https://whatsapp.com/channel/0029VbDB0GP7T8bVweu13f1U" target="_blank" rel="noopener noreferrer" class="px-5 py-3 rounded-xl font-bold text-sm bg-emerald-500/15 text-emerald-400 border border-emerald-500/35 hover:bg-emerald-500/25 transition inline-flex items-center gap-2 touch-target">
+              <span>Join Community</span>
+              <span class="text-xs">↗</span>
+            </a>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4 mt-10 pt-8 border-t border-white/10">
+          <div class="p-4 rounded-2xl theme-input">
+            <p class="text-xs theme-text-muted">Total Mod Aktif</p>
+            <p id="statTotalMods" class="font-display text-2xl font-extrabold theme-accent-text mt-1">0</p>
+          </div>
+          <div class="p-4 rounded-2xl theme-input">
+            <p class="text-xs theme-text-muted">Total Unduhan</p>
+            <p id="statTotalDownloads" class="font-display text-2xl font-extrabold text-violet-400 mt-1">0</p>
+          </div>
+          <div class="p-4 rounded-2xl theme-input">
+            <p class="text-xs theme-text-muted">Sesi Aktif Realtime</p>
+            <p id="statActiveUsers" class="font-display text-2xl font-extrabold text-emerald-400 mt-1">1</p>
+          </div>
+          <div class="p-4 rounded-2xl theme-input">
+            <p class="text-xs theme-text-muted">Request Komunitas</p>
+            <p id="statTotalRequests" class="font-display text-2xl font-extrabold text-amber-400 mt-1">0</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Mod Populer Terbaru -->
+      <div class="space-y-5">
+        <div class="flex flex-wrap items-center justify-between gap-3">
+          <div>
+            <h2 class="font-display text-xl sm:text-2xl font-extrabold">Mod Pilihan Terbaru</h2>
+            <p class="text-xs sm:text-sm theme-text-muted">Klik kartu mod untuk melihat detail, rating, screenshot pengguna, atau mengunduh file.</p>
+          </div>
+          <button onclick="switchPage('jelajah-mod')" class="px-4 py-2 rounded-xl text-xs font-bold theme-accent-text bg-cyan-500/10 border border-cyan-500/30 hover:bg-cyan-500/20 transition">
+            Lihat Semua Mod →
+          </button>
+        </div>
+        <div id="lobbyFeaturedModsGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"></div>
+      </div>
+    </section>
+
+    <!-- 2. HALAMAN TEMPAT DOWNLOAD GAME PC -->
+    <section id="page-download-game" class="page-view hidden max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12 space-y-8">
+      <div class="flex flex-wrap items-center justify-between gap-3">
+        <button onclick="switchPage('lobi')" class="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs sm:text-sm font-bold theme-card hover:border-cyan-400 transition">
+          <span>← Kembali ke Lobi</span>
+        </button>
+        <span class="text-xs theme-text-muted font-semibold">Direktori Game PC Terkurasi</span>
+      </div>
+
+      <div class="space-y-2">
+        <h1 class="font-display text-2xl sm:text-4xl font-extrabold tracking-tight">Tempat Download Game PC</h1>
+        <p class="text-sm sm:text-base theme-text-muted max-w-3xl">
+          Daftar situs sumber daya game PC yang dikurasi langsung oleh pengembang YOMAN START. Klik kartu atau logo untuk mengunjungi tautan resmi.
+        </p>
+      </div>
+
+      <div id="gameDirectoriesGrid" class="space-y-6"></div>
+    </section>
+
+    <!-- 3. HALAMAN JELAJAH MOD -->
+    <section id="page-jelajah-mod" class="page-view hidden max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12 space-y-8">
+      <div class="flex flex-wrap items-center justify-between gap-3">
+        <button onclick="switchPage('lobi')" class="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs sm:text-sm font-bold theme-card hover:border-cyan-400 transition">
+          <span>← Kembali ke Lobi</span>
+        </button>
+        <div class="flex flex-wrap items-center gap-2">
+          <button onclick="openRequestModModal()" class="px-4 py-2.5 rounded-xl text-xs sm:text-sm font-bold bg-violet-600/20 text-violet-300 border border-violet-500/40 hover:bg-violet-600/30 transition">
+            + Request Mod
+          </button>
+          <button onclick="handleUploadModClick()" class="px-5 py-2.5 rounded-xl text-xs sm:text-sm font-bold text-white accent-gradient accent-glow hover:opacity-95 transition">
+            + Upload Mod Baru
+          </button>
+        </div>
+      </div>
+
+      <div class="flex flex-col md:flex-row md:items-end justify-between gap-4">
+        <div>
+          <h1 class="font-display text-2xl sm:text-4xl font-extrabold tracking-tight">Jelajah Mod Komunitas</h1>
+          <p class="text-sm theme-text-muted mt-1">Cari mod berdasarkan nama mod, pembuat, atau judul game (mendukung pencarian toleran typo).</p>
+        </div>
+      </div>
+
+      <div class="relative">
+        <input
+          type="search"
+          id="modSearchInput"
+          oninput="renderMods()"
+          placeholder="Cari nama mod, nama pembuat, atau game (contoh: GTA V, Resident Evil, Indo Patch)..."
+          class="w-full pl-11 pr-4 py-3.5 rounded-2xl theme-input focus:outline-none focus:border-cyan-500"
+        />
+        <svg class="w-5 h-5 theme-text-muted absolute left-4 top-1/2 -translate-y-1/2" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-4.35-4.35M17 11A6 6 0 115 11a6 6 0 0112 0z" />
+        </svg>
+      </div>
+
+      <div id="modsGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"></div>
+    </section>
+
+    <!-- 4. HALAMAN INFO & MASUKAN -->
+    <section id="page-info-masukan" class="page-view hidden max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12 space-y-8">
+      <div class="flex flex-wrap items-center justify-between gap-3">
+        <button onclick="switchPage('lobi')" class="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs sm:text-sm font-bold theme-card hover:border-cyan-400 transition">
+          <span>← Kembali ke Lobi</span>
+        </button>
+        <span class="text-xs theme-text-muted font-semibold">Profil Pengembang &amp; Masukan Pengguna</span>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+        <div class="lg:col-span-5 theme-card rounded-3xl p-6 sm:p-8 space-y-6">
+          <div class="space-y-1">
+            <span class="text-xs font-bold uppercase tracking-widest theme-accent-text">Info Pengembang</span>
+            <h2 class="font-display text-2xl font-extrabold">Rafli Yasin</h2>
+            <p class="text-xs theme-text-muted">Founder &amp; Lead Developer • YOMAN START (Rafli Production)</p>
+          </div>
+
+          <p class="text-sm theme-text-muted leading-relaxed">
+            YOMAN START dibangun untuk memudahkan gamer PC menemukan sumber unduhan terpercaya, berbagi mod, dan mengatasi masalah teknis game dengan cepat.
+          </p>
+
+          <div class="space-y-3">
+            <a id="infoCommunityLink" href="https://whatsapp.com/channel/0029VbDB0GP7T8bVweu13f1U" target="_blank" rel="noopener noreferrer" class="flex items-center justify-between p-3.5 rounded-2xl theme-input hover:border-emerald-400/50 transition touch-target">
+              <span class="text-xs font-bold text-emerald-400">Saluran WhatsApp YOMAN START</span>
+              <span class="text-xs theme-text-muted">Buka Saluran ↗</span>
+            </a>
+            <a href="https://www.tiktok.com/@yoman.start" target="_blank" rel="noopener noreferrer" class="flex items-center justify-between p-3.5 rounded-2xl theme-input hover:border-pink-400/50 transition touch-target">
+              <span class="text-xs font-bold text-pink-400">TikTok Resmi (@yoman.start)</span>
+              <span class="text-xs theme-text-muted">Kunjungi ↗</span>
+            </a>
+            <a href="mailto:rafliyasin500@gmail.com" class="flex items-center justify-between p-3.5 rounded-2xl theme-input hover:border-cyan-400/50 transition touch-target">
+              <span class="text-xs font-bold theme-accent-text">Email: rafliyasin500@gmail.com</span>
+              <span class="text-xs theme-text-muted">Kirim Email ↗</span>
+            </a>
+            <a href="https://sociabuzz.com/gentamc99" target="_blank" rel="noopener noreferrer" class="flex items-center justify-between p-3.5 rounded-2xl theme-input hover:border-amber-400/50 transition touch-target">
+              <span class="text-xs font-bold text-amber-400">Dukung via SociaBuzz</span>
+              <span class="text-xs theme-text-muted">Donasi ↗</span>
+            </a>
+          </div>
+        </div>
+
+        <div class="lg:col-span-7 theme-card rounded-3xl p-6 sm:p-8 space-y-6">
+          <div>
+            <span class="text-xs font-bold uppercase tracking-widest text-violet-400">Aspirasi Komunitas</span>
+            <h2 class="font-display text-2xl font-extrabold mt-1">Kotak Masukan &amp; Saran</h2>
+            <p class="text-xs sm:text-sm theme-text-muted mt-1">Sampaikan saran fitur, laporan error, atau ide pengembangan langsung kepada pengembang.</p>
+          </div>
+
+          <div id="feedbackFormContainer"></div>
+
+          <div class="space-y-3 pt-4 border-t border-white/10">
+            <h3 class="text-xs font-bold uppercase tracking-wider theme-text-muted">Masukan Terbaru dari Pengguna</h3>
+            <div id="feedbackList" class="space-y-3 max-h-72 overflow-y-auto pr-1"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- ==================== FOOTER (JALUR RAHASIA 5x KLIK) ==================== -->
+  <footer class="theme-surface border-t py-6 px-4 text-center text-xs theme-text-muted">
+    <div class="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-2">
+      <p>
+        © 2026 <strong onclick="registerSecretDevClick()" class="cursor-pointer select-none">YOMAN START</strong> — Dikembangkan oleh <strong class="theme-accent-text">Rafli Yasin</strong>
+      </p>
+      <p onclick="registerSecretDevClick()" class="cursor-pointer select-none px-2 py-1 rounded hover:bg-white/5" title="Build Version">
+        Build Release <span class="font-mono font-bold">v1.0.4-final</span>
+      </p>
+    </div>
+  </footer>
+
+  <!-- ==================== MODAL 1: LOGIN (GOOGLE OAUTH + WHATSAPP OTP + LUPA SANDI + DEV) ==================== -->
+  <div id="loginModal" class="hidden fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
+    <div class="theme-surface border rounded-3xl max-w-md w-full p-6 sm:p-7 relative shadow-2xl max-h-[92vh] overflow-y-auto">
+      <button onclick="closeModal('loginModal')" class="absolute top-4 right-4 w-10 h-10 rounded-xl flex items-center justify-center hover:bg-slate-500/15 font-bold">✕</button>
+
+      <div class="mb-5 pt-1">
+        <h3 class="font-display text-xl font-extrabold">Masuk ke YOMAN START</h3>
+        <p class="text-xs theme-text-muted mt-1">Pilih metode autentikasi Google atau Verifikasi OTP WhatsApp.</p>
+      </div>
+
+      <div id="authTabsGrid" class="grid grid-cols-3 gap-1.5 p-1 rounded-2xl theme-input mb-5 text-xs">
+        <button id="tabBtnGoogle" onclick="switchAuthTab('google')" class="py-2.5 rounded-xl theme-tab-active">Google</button>
+        <button id="tabBtnPhone" onclick="switchAuthTab('phone')" class="py-2.5 rounded-xl theme-tab-inactive">WhatsApp OTP</button>
+        <button id="tabBtnForgot" onclick="switchAuthTab('forgot')" class="py-2.5 rounded-xl theme-tab-inactive">Lupa Sandi</button>
+        <button id="tabBtnDevSecret" onclick="switchAuthTab('dev')" class="hidden py-2.5 rounded-xl theme-tab-inactive text-amber-400 font-extrabold">Developer</button>
+      </div>
+
+      <!-- Panel 1: Google Sign-In Popup Flow -->
+      <div id="authPanelGoogle" class="space-y-4">
+        <div class="p-3.5 rounded-xl theme-input text-xs space-y-1">
+          <p class="font-bold theme-accent-text">Google Identity Sign-In</p>
+          <p class="theme-text-muted">Otomatis mengambil Nama Lengkap dan Tanggal Lahir dari profil Akun Google Anda.</p>
+        </div>
+
+        <button onclick="openGoogleAccountChooserPopup()" class="w-full py-3 px-4 rounded-xl font-bold text-sm bg-white text-slate-900 border border-slate-300 hover:bg-slate-100 transition flex items-center justify-center gap-3 shadow-sm">
+          <svg class="w-5 h-5 shrink-0" viewBox="0 0 24 24">
+            <path fill="#EA4335" d="M12 5c1.6 0 3 .6 4.1 1.6l3.1-3.1C17.3 1.7 14.8 1 12 1 7.4 1 3.5 3.6 1.6 7.4l3.6 2.8C6.1 7.2 8.8 5 12 5z"/>
+            <path fill="#4285F4" d="M23.5 12.3c0-.8-.1-1.6-.2-2.3H12v4.5h6.5c-.3 1.5-1.1 2.8-2.4 3.6l3.7 2.9c2.2-2 3.7-5 3.7-8.7z"/>
+            <path fill="#FBBC05" d="M5.2 14.8c-.2-.8-.4-1.6-.4-2.5s.2-1.7.4-2.5L1.6 7C.6 8.9 0 11.1 0 13.5s.6 4.6 1.6 6.5l3.6-2.8z"/>
+            <path fill="#34A853" d="M12 24c3.2 0 6-1.1 8-3l-3.7-2.9c-1.1.7-2.5 1.2-4.3 1.2-3.2 0-5.9-2.2-6.8-5.1l-3.6 2.8C3.5 21.1 7.4 24 12 24z"/>
+          </svg>
+          <span>Lanjutkan dengan Akun Google</span>
+        </button>
+
+        <div class="relative flex py-1 items-center">
+          <div class="flex-grow border-t border-white/10"></div>
+          <span class="flex-shrink mx-3 text-[11px] theme-text-muted">atau masukkan email Google</span>
+          <div class="flex-grow border-t border-white/10"></div>
+        </div>
+
+        <div class="space-y-3">
+          <input type="email" id="googleEmailInput" placeholder="nama.anda@gmail.com" class="w-full px-4 py-3 rounded-xl theme-input focus:outline-none focus:border-cyan-500" />
+          <div id="userOptionalPasswordBox" class="hidden">
+            <label class="block text-xs font-bold mb-1">Kata Sandi Akun *</label>
+            <input type="password" id="userLoginPasswordInput" placeholder="Masukkan kata sandi akun Anda" class="w-full px-4 py-3 rounded-xl theme-input focus:outline-none focus:border-cyan-500" />
+          </div>
+          <button onclick="loginWithGoogleEmail()" class="w-full py-3 rounded-xl font-bold text-sm text-white accent-gradient hover:opacity-95 transition">
+            Masuk dengan Email Google
+          </button>
+        </div>
+      </div>
+
+      <!-- Panel 2: Login WhatsApp + Kotak Notifikasi WA Masuk -->
+      <div id="authPanelPhone" class="space-y-4">
+        <div>
+          <label class="block text-xs font-bold mb-1.5">Nomor WhatsApp Aktif *</label>
+          <div class="flex flex-col sm:flex-row gap-2">
+            <input type="tel" id="phoneInput" placeholder="0812xxxxxxxx" class="flex-1 px-4 py-2.5 rounded-xl theme-input focus:outline-none focus:border-emerald-500" />
+            <button onclick="sendWhatsAppOtp()" class="px-4 py-2.5 rounded-xl text-xs font-bold text-white bg-emerald-600 hover:bg-emerald-500 transition shrink-0">
+              Kirim Kode WA
+            </button>
+          </div>
+        </div>
+
+        <!-- Simulasi Kotak Notifikasi Pesan Masuk WhatsApp Asli -->
+        <div id="waPushNotificationBox" class="hidden wa-notif-enter rounded-2xl bg-[#0b141a] border border-emerald-500/50 p-3.5 shadow-xl space-y-2">
+          <div class="flex items-center justify-between gap-2">
+            <div class="flex items-center gap-2">
+              <div class="w-7 h-7 rounded-full bg-[#25D366] text-white flex items-center justify-center shrink-0">
+                <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M12.031 6.172c-3.181 0-5.767 2.586-5.768 5.766-.001 1.298.38 2.27 1.019 3.287l-.582 2.128 2.182-.573c.978.58 1.911.928 3.145.929 3.178 0 5.767-2.587 5.768-5.766.001-3.187-2.575-5.77-5.764-5.771zm3.392 8.244c-.144.405-.837.774-1.17.824-.299.045-.677.063-1.092-.069-.252-.08-.575-.187-.988-.365-1.739-.751-2.874-2.502-2.961-2.617-.087-.116-.708-.94-.708-1.793s.448-1.273.607-1.446c.159-.173.346-.217.462-.217l.332.006c.106.005.249-.04.39.298.144.347.491 1.2.534 1.287.043.087.072.188.014.304-.058.116-.087.188-.173.289l-.26.304c-.087.086-.177.18-.076.354.101.174.449.741.964 1.201.662.591 1.221.774 1.394.86s.274.072.376-.043c.101-.116.433-.506.549-.68.116-.173.231-.145.39-.087s1.011.477 1.184.564.289.13.332.202c.045.072.045.419-.1.824z"/></svg>
+              </div>
+              <div>
+                <p class="text-[11px] font-extrabold text-white leading-tight flex items-center gap-1">
+                  <span>WhatsApp Business • YOMAN START</span>
+                  <span class="inline-flex items-center justify-center w-3.5 h-3.5 rounded-full bg-[#25D366] text-black text-[9px] font-black">✓</span>
+                </p>
+                <p class="text-[10px] text-emerald-400 font-semibold">Pesan Masuk • Baru saja</p>
+              </div>
+            </div>
+            <button type="button" onclick="copyOtpToInput()" class="px-2.5 py-1 rounded-lg bg-[#25D366]/20 text-[#25D366] text-[10px] font-bold hover:bg-[#25D366]/30 min-h-0">
+              Salin Kode
+            </button>
+          </div>
+          <div class="p-2.5 rounded-xl bg-[#1f2c34] text-xs text-zinc-100 leading-relaxed">
+            Kode verifikasi OTP YOMAN START Anda adalah: <strong id="waOtpMessageCode" class="font-mono text-sm text-[#25D366] tracking-wider"></strong>. Jangan bagikan kode ini kepada siapa pun.
+          </div>
+        </div>
+
+        <div id="otpVerifyBox" class="hidden space-y-3">
+          <div>
+            <label class="block text-xs font-bold mb-1.5">Masukkan 6 Digit Kode Verifikasi WA *</label>
+            <input type="text" id="otpCodeInput" maxlength="6" placeholder="••••••" class="w-full px-4 py-3 rounded-xl theme-input text-center font-mono text-lg font-bold tracking-[0.4em] focus:outline-none focus:border-emerald-500" />
+          </div>
+          <button onclick="verifyWhatsAppOtp()" class="w-full py-3 rounded-xl font-bold text-sm text-white bg-emerald-600 hover:bg-emerald-500 transition">
+            Verifikasi &amp; Lanjutkan
+          </button>
+        </div>
+      </div>
+
+      <!-- Panel 3: Lupa Kata Sandi -->
+      <div id="authPanelForgot" class="hidden space-y-4">
+        <div class="p-3.5 rounded-xl theme-input text-xs space-y-1">
+          <p class="font-bold theme-accent-text">Permintaan Reset Kata Sandi</p>
+          <p class="theme-text-muted">Masukkan Nama Akun, Email, atau Nomor WhatsApp Anda. Tiket akan langsung dikirim ke Developer.</p>
+        </div>
+        <div>
+          <label class="block text-xs font-bold mb-1.5">Nama Akun / Email / No. WA *</label>
+          <input type="text" id="forgotAccountIdentifierInput" placeholder="Contoh: Dimas Aditya / nama@gmail.com" class="w-full px-4 py-3 rounded-xl theme-input focus:outline-none focus:border-cyan-500" />
+        </div>
+        <div>
+          <label class="block text-xs font-bold mb-1.5">Keterangan Tambahan (Opsional)</label>
+          <input type="text" id="forgotNoteInput" placeholder="Contoh: Lupa sandi setelah ganti perangkat" class="w-full px-4 py-3 rounded-xl theme-input focus:outline-none focus:border-cyan-500" />
+        </div>
+        <button onclick="submitForgotPasswordRequest()" class="w-full py-3 rounded-xl font-bold text-sm text-white accent-gradient hover:opacity-95 transition">
+          Kirim Permintaan ke Developer
+        </button>
+      </div>
+
+      <!-- Panel 4: Login Khusus Super Developer -->
+      <div id="authPanelDev" class="hidden space-y-4">
+        <div class="p-3.5 rounded-xl bg-amber-500/15 border border-amber-500/40 text-xs space-y-1">
+          <p class="font-extrabold text-amber-400">Akses Super Developer Utama</p>
+          <p class="theme-text-muted">Masuk menggunakan kredensial pengembang terverifikasi YOMAN START.</p>
+        </div>
+        <div>
+          <label class="block text-xs font-bold mb-1.5">Email Developer *</label>
+          <input type="email" id="devEmailInput" placeholder="rafliyasin500@gmail.com" class="w-full px-4 py-3 rounded-xl theme-input focus:outline-none focus:border-amber-400" />
+        </div>
+        <div>
+          <label class="block text-xs font-bold mb-1.5">Kata Sandi Developer *</label>
+          <input type="password" id="devPasswordInput" placeholder="••••••••••" class="w-full px-4 py-3 rounded-xl theme-input focus:outline-none focus:border-amber-400" />
+        </div>
+        <button onclick="loginAsDeveloper()" class="w-full py-3 rounded-xl font-bold text-sm text-zinc-950 bg-amber-400 hover:bg-amber-300 transition">
+          Masuk ke Developer Control Center
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== MODAL 1B: POPUP GOOGLE ACCOUNT CHOOSER ==================== -->
+  <div id="googleChooserModal" class="hidden fixed inset-0 z-50 bg-black/80 backdrop-blur-md flex items-center justify-center p-4">
+    <div class="bg-white text-slate-900 rounded-3xl max-w-sm w-full p-6 shadow-2xl space-y-5 relative">
+      <button onclick="closeModal('googleChooserModal')" class="absolute top-4 right-4 w-9 h-9 rounded-full hover:bg-slate-100 font-bold text-slate-500">✕</button>
+      <div class="text-center space-y-1.5 pt-1">
+        <div class="w-10 h-10 mx-auto rounded-full bg-slate-100 flex items-center justify-center">
+          <svg class="w-6 h-6" viewBox="0 0 24 24">
+            <path fill="#EA4335" d="M12 5c1.6 0 3 .6 4.1 1.6l3.1-3.1C17.3 1.7 14.8 1 12 1 7.4 1 3.5 3.6 1.6 7.4l3.6 2.8C6.1 7.2 8.8 5 12 5z"/>
+            <path fill="#4285F4" d="M23.5 12.3c0-.8-.1-1.6-.2-2.3H12v4.5h6.5c-.3 1.5-1.1 2.8-2.4 3.6l3.7 2.9c2.2-2 3.7-5 3.7-8.7z"/>
+            <path fill="#FBBC05" d="M5.2 14.8c-.2-.8-.4-1.6-.4-2.5s.2-1.7.4-2.5L1.6 7C.6 8.9 0 11.1 0 13.5s.6 4.6 1.6 6.5l3.6-2.8z"/>
+            <path fill="#34A853" d="M12 24c3.2 0 6-1.1 8-3l-3.7-2.9c-1.1.7-2.5 1.2-4.3 1.2-3.2 0-5.9-2.2-6.8-5.1l-3.6 2.8C3.5 21.1 7.4 24 12 24z"/>
+          </svg>
+        </div>
+        <h4 class="font-display text-lg font-extrabold">Pilih Akun Google</h4>
+        <p class="text-xs text-slate-500">Lanjutkan ke <strong>YOMAN START</strong> (otomatis sinkron Nama &amp; Tanggal Lahir)</p>
+      </div>
+
+      <div class="divide-y divide-slate-200 border border-slate-200 rounded-2xl overflow-hidden">
+        <button onclick="selectGoogleAccount('Rizky Pratama', 'rizky.pratama@gmail.com', '2003-06-15')" class="w-full p-3.5 flex items-center gap-3 hover:bg-slate-50 transition text-left">
+          <div class="w-9 h-9 rounded-full bg-sky-600 text-white font-bold text-xs flex items-center justify-center shrink-0">RP</div>
+          <div class="min-w-0">
+            <p class="text-xs font-bold text-slate-900 truncate">Rizky Pratama</p>
+            <p class="text-[11px] text-slate-500 truncate">rizky.pratama@gmail.com • Lahir: 15 Jun 2003</p>
+          </div>
+        </button>
+        <button onclick="selectGoogleAccount('Nadia Safitri', 'nadia.safitri@gmail.com', '2005-11-22')" class="w-full p-3.5 flex items-center gap-3 hover:bg-slate-50 transition text-left">
+          <div class="w-9 h-9 rounded-full bg-violet-600 text-white font-bold text-xs flex items-center justify-center shrink-0">NS</div>
+          <div class="min-w-0">
+            <p class="text-xs font-bold text-slate-900 truncate">Nadia Safitri</p>
+            <p class="text-[11px] text-slate-500 truncate">nadia.safitri@gmail.com • Lahir: 22 Nov 2005</p>
+          </div>
+        </button>
+        <button onclick="selectGoogleAccount('Dimas Aditya', 'dimas.aditya@gmail.com', '2004-08-19')" class="w-full p-3.5 flex items-center gap-3 hover:bg-slate-50 transition text-left">
+          <div class="w-9 h-9 rounded-full bg-emerald-600 text-white font-bold text-xs flex items-center justify-center shrink-0">DA</div>
+          <div class="min-w-0">
+            <p class="text-xs font-bold text-slate-900 truncate">Dimas Aditya</p>
+            <p class="text-[11px] text-slate-500 truncate">dimas.aditya@gmail.com • Lahir: 19 Agu 2004</p>
+          </div>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== MODAL 2: LENGKAPI PROFIL (MANUAL WA / KONFIRMASI GOOGLE) ==================== -->
+  <div id="onboardingModal" class="hidden fixed inset-0 z-50 bg-black/80 backdrop-blur-md flex items-center justify-center p-4">
+    <div class="theme-surface border rounded-3xl max-w-md w-full p-6 sm:p-7 relative shadow-2xl max-h-[92vh] overflow-y-auto">
+      <div class="mb-5">
+        <span id="onboardingMethodBadge" class="inline-block px-3 py-1 rounded-full text-[11px] font-bold bg-cyan-500/15 theme-accent-text border border-cyan-500/30 mb-2">
+          Profil Pengguna
+        </span>
+        <h3 class="font-display text-xl font-extrabold">Lengkapi Identitas Akun</h3>
+        <p id="onboardingSubtitleText" class="text-xs theme-text-muted mt-1">
+          Lengkapi Foto Profil, Nama Lengkap, dan Tanggal Lahir Anda sebelum masuk ke komunitas.
+        </p>
+      </div>
+
+      <form onsubmit="saveUserProfile(event)" class="space-y-4">
+        <div class="flex flex-col items-center gap-3 p-4 rounded-2xl theme-input">
+          <div id="onboardingAvatarPreview" class="w-20 h-20 rounded-full overflow-hidden border-2 border-cyan-400/60 bg-zinc-900 flex items-center justify-center text-2xl font-display font-extrabold text-cyan-400">
+            YS
+          </div>
+          <label class="cursor-pointer inline-flex items-center justify-center px-4 py-2 rounded-xl text-xs font-bold bg-cyan-500/20 theme-accent-text border border-cyan-500/35 hover:bg-cyan-500/30 transition touch-target">
+            <span>Pilih Foto Profil (Opsional)</span>
+            <input type="file" accept="image/jpeg,image/png,image/webp" onchange="handleAvatarFileChange(event, 'onboarding')" class="hidden" />
+          </label>
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold mb-1.5">Nama Lengkap / Nama Tampilan *</label>
+          <input
+            type="text"
+            id="profileDisplayNameInput"
+            required
+            minlength="3"
+            maxlength="40"
+            oninput="updateOnboardingAvatarInitials()"
+            placeholder="Masukkan Nama Lengkap Anda"
+            class="w-full px-4 py-3 rounded-xl theme-input focus:outline-none focus:border-cyan-500"
+          />
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold mb-1.5">Tanggal Lahir *</label>
+          <input
+            type="date"
+            id="profileBirthDateInput"
+            required
+            onchange="previewCalculatedAge('profileBirthDateInput', 'profileAgePreview')"
+            class="w-full px-4 py-3 rounded-xl theme-input focus:outline-none focus:border-cyan-500"
+          />
+          <p id="profileAgePreview" class="text-[11px] font-semibold theme-accent-text mt-1"></p>
+        </div>
+
+        <button type="submit" class="w-full py-3.5 rounded-xl font-bold text-sm text-white accent-gradient accent-glow hover:opacity-95 transition">
+          Simpan Profil &amp; Masuk
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- ==================== MODAL 3: UPLOAD MOD BARU ==================== -->
+  <div id="uploadModModal" class="hidden fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
+    <div class="theme-surface border rounded-3xl max-w-lg w-full p-6 sm:p-7 relative shadow-2xl max-h-[92vh] overflow-y-auto">
+      <button onclick="closeModal('uploadModModal')" class="absolute top-4 right-4 w-10 h-10 rounded-xl flex items-center justify-center hover:bg-slate-500/15 font-bold">✕</button>
+      <h3 class="font-display text-xl font-extrabold mb-1 pt-1">Upload Mod Baru</h3>
+      <p class="text-xs theme-text-muted mb-5">Bagikan mod karya Anda kepada komunitas YOMAN START.</p>
+
+      <form onsubmit="submitNewMod(event)" class="space-y-4">
+        <div>
+          <label class="block text-xs font-bold mb-1">Pembuat / Uploader</label>
+          <input type="text" id="modAuthorField" readonly class="w-full px-4 py-2.5 rounded-xl theme-input font-bold theme-accent-text cursor-not-allowed opacity-90" />
+        </div>
+        <div>
+          <label class="block text-xs font-bold mb-1">Nama Mod *</label>
+          <input type="text" id="modNameField" required minlength="3" placeholder="Contoh: Realistic Indonesian Traffic Pack v2" class="w-full px-4 py-2.5 rounded-xl theme-input focus:outline-none focus:border-cyan-500" />
+        </div>
+        <div>
+          <label class="block text-xs font-bold mb-1">Untuk Game Apa *</label>
+          <input type="text" id="modGameField" required minlength="2" placeholder="Contoh: Grand Theft Auto V / Resident Evil 4 Remake" class="w-full px-4 py-2.5 rounded-xl theme-input focus:outline-none focus:border-cyan-500" />
+        </div>
+        <div>
+          <label class="block text-xs font-bold mb-1">Deskripsi &amp; Cara Pasang *</label>
+          <textarea id="modDescField" rows="3" required minlength="10" placeholder="Jelaskan fitur mod dan langkah instalasinya..." class="w-full px-4 py-2.5 rounded-xl theme-input focus:outline-none focus:border-cyan-500"></textarea>
+        </div>
+        <div class="p-3.5 rounded-2xl theme-input space-y-2.5">
+          <label class="block text-xs font-bold">Thumbnail / Gambar Pratinjau Mod (JPG/PNG/WEBP)</label>
+          <input type="file" id="modThumbnailField" accept="image/jpeg,image/png,image/webp" onchange="handleModThumbnailPreview(event)" class="w-full text-xs file:mr-3 file:py-2 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-bold file:bg-violet-500/20 file:text-violet-400" />
+          <div id="modThumbnailPreviewWrapper" class="hidden relative rounded-xl overflow-hidden border border-cyan-500/40 bg-black/40">
+            <img id="modThumbnailPreviewImg" src="" alt="Preview Thumbnail" class="w-full h-40 object-cover" />
+            <button type="button" onclick="clearModThumbnailPreview()" class="absolute top-2 right-2 px-2.5 py-1 rounded-lg bg-black/80 text-rose-400 text-[11px] font-bold min-h-0">Hapus</button>
+          </div>
+        </div>
+        <div>
+          <label class="block text-xs font-bold mb-1">File Mod (.zip, .rar, .7z, .asi, .dll, .xml, .txt) *</label>
+          <input type="file" id="modFileField" required class="w-full text-xs theme-input rounded-xl p-2.5 file:mr-3 file:py-2 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-bold file:bg-cyan-500/20 file:text-cyan-400" />
+        </div>
+        <button type="submit" class="w-full py-3.5 rounded-xl font-bold text-sm text-white accent-gradient accent-glow hover:opacity-95 transition">
+          Publikasikan Mod Sekarang
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- ==================== MODAL 4: REQUEST MOD / GAME (ANTI-SPAM COOLDOWN) ==================== -->
+  <div id="requestModModal" class="hidden fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
+    <div class="theme-surface border rounded-3xl max-w-md w-full p-6 sm:p-7 relative shadow-2xl">
+      <button onclick="closeModal('requestModModal')" class="absolute top-4 right-4 w-10 h-10 rounded-xl flex items-center justify-center hover:bg-slate-500/15 font-bold">✕</button>
+      <div class="mb-4 pt-1">
+        <span class="px-2.5 py-1 rounded-full text-[11px] font-bold bg-violet-500/20 text-violet-300 border border-violet-500/35">Komunitas YOMAN START</span>
+        <h3 class="font-display text-xl font-extrabold mt-2">Request Mod atau Game PC</h3>
+        <p class="text-xs theme-text-muted mt-1">Ajuan akan dikirim ke notifikasi Developer &amp; Kreator Centang Biru.</p>
+      </div>
+
+      <div id="requestCooldownBanner" class="hidden mb-4 p-3.5 rounded-2xl bg-amber-500/15 border border-amber-500/40 text-xs space-y-1">
+        <p class="font-bold text-amber-400">Cooldown Anti-Spam Aktif</p>
+        <p class="theme-text-muted">Tunggu <strong id="requestCountdownDisplay" class="font-mono text-amber-300">00:00</strong> sebelum mengirim request berikutnya.</p>
+      </div>
+
+      <form onsubmit="submitModRequest(event)" class="space-y-4">
+        <div>
+          <label class="block text-xs font-bold mb-1">Kategori Request *</label>
+          <select id="reqCategoryInput" class="w-full px-4 py-2.5 rounded-xl theme-input focus:outline-none focus:border-cyan-500">
+            <option value="Mod Bahasa Indonesia">Mod Bahasa Indonesia</option>
+            <option value="Mod Grafik / Gameplay">Mod Grafik / Gameplay</option>
+            <option value="Request Game PC Baru">Request Game PC Baru</option>
+            <option value="Solusi Error Game">Solusi Error Game</option>
+          </select>
+        </div>
+        <div>
+          <label class="block text-xs font-bold mb-1">Judul Game / Nama Mod yang Diminta *</label>
+          <input type="text" id="reqTitleInput" required minlength="3" placeholder="Contoh: Ghost of Tsushima Indo Subtitle" class="w-full px-4 py-2.5 rounded-xl theme-input focus:outline-none focus:border-cyan-500" />
+        </div>
+        <div>
+          <label class="block text-xs font-bold mb-1">Detail Tambahan *</label>
+          <textarea id="reqDetailsInput" rows="3" required minlength="6" placeholder="Sebutkan versi game atau detail mod yang Anda inginkan..." class="w-full px-4 py-2.5 rounded-xl theme-input focus:outline-none focus:border-cyan-500"></textarea>
+        </div>
+        <button id="submitRequestBtn" type="submit" class="w-full py-3 rounded-xl font-bold text-sm text-white accent-gradient hover:opacity-95 transition">
+          Kirim Request Sekarang
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- ==================== MODAL 5: DETAIL MOD + ULASAN TERVERIFIKASI UNDUHAN ==================== -->
+  <div id="modDetailModal" class="hidden fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-3 sm:p-4">
+    <div class="theme-surface border rounded-3xl max-w-3xl w-full overflow-hidden relative shadow-2xl max-h-[92vh] flex flex-col">
+      <button onclick="closeModal('modDetailModal')" class="absolute top-3 right-3 z-10 w-10 h-10 rounded-full bg-black/75 text-white flex items-center justify-center hover:bg-black font-bold">✕</button>
+
+      <div class="overflow-y-auto flex-1">
+        <div class="w-full h-56 sm:h-72 bg-black overflow-hidden">
+          <img id="detailModImage" src="" alt="Preview Mod" class="w-full h-full object-cover" />
+        </div>
+
+        <div class="p-5 sm:p-7 space-y-6">
+          <div class="space-y-2.5">
+            <div class="flex flex-wrap items-center justify-between gap-2">
+              <span id="detailModGame" class="px-3 py-1 rounded-lg text-xs font-bold bg-cyan-500/15 theme-accent-text border border-cyan-500/30"></span>
+              <div class="flex items-center gap-2 text-xs">
+                <span id="detailModRatingBadge" class="px-2.5 py-1 rounded-lg font-bold bg-amber-500/15 text-amber-400 border border-amber-500/30"></span>
+                <span id="detailModDate" class="theme-text-muted"></span>
+              </div>
+            </div>
+
+            <h3 id="detailModTitle" class="font-display text-xl sm:text-2xl font-extrabold"></h3>
+
+            <div class="flex flex-wrap items-center gap-3 text-xs theme-text-muted">
+              <span class="flex items-center gap-1">Pembuat: <strong id="detailModAuthor" class="text-violet-400"></strong><span id="detailModVerifiedBadge"></span></span>
+              <span>•</span>
+              <span>Total Unduhan: <strong id="detailModDownloads" class="theme-accent-text"></strong></span>
+            </div>
+          </div>
+
+          <div class="p-4 rounded-2xl theme-input space-y-1.5">
+            <p class="text-xs font-bold uppercase tracking-wider theme-text-muted">Deskripsi &amp; Panduan Pemasangan</p>
+            <p id="detailModDesc" class="text-sm leading-relaxed whitespace-pre-line"></p>
+          </div>
+
+          <div>
+            <button id="detailModDownloadBtn" class="w-full py-3.5 px-5 rounded-xl font-bold text-sm text-white accent-gradient accent-glow hover:opacity-95 transition flex items-center justify-center gap-2">
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2.3" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+              </svg>
+              <span id="detailModDownloadText">Download File Mod</span>
+            </button>
+          </div>
+
+          <div class="border-t border-white/10 pt-6 space-y-5">
+            <div class="flex flex-wrap items-center justify-between gap-2">
+              <h4 class="font-display text-lg font-extrabold">Ulasan, Rating &amp; Screenshot Pengguna</h4>
+              <span id="detailReviewCountLabel" class="text-xs font-semibold theme-text-muted"></span>
+            </div>
+
+            <div id="modReviewFormContainer"></div>
+            <div id="modReviewsList" class="space-y-4"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== MODAL 6: KONTEN YANG DIUPLOAD PENGGUNA ==================== -->
+  <div id="myContentModal" class="hidden fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
+    <div class="theme-surface border rounded-3xl max-w-3xl w-full p-6 sm:p-7 relative shadow-2xl max-h-[90vh] flex flex-col">
+      <button onclick="closeModal('myContentModal')" class="absolute top-4 right-4 w-10 h-10 rounded-xl flex items-center justify-center hover:bg-slate-500/15 font-bold">✕</button>
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-5 pr-10">
+        <div>
+          <h3 class="font-display text-xl font-extrabold">Konten yang Diupload</h3>
+          <p class="text-xs theme-text-muted mt-0.5">Kelola semua mod yang telah Anda unggah ke YOMAN START.</p>
+        </div>
+        <button onclick="closeModal('myContentModal'); handleUploadModClick();" class="px-4 py-2.5 rounded-xl text-xs font-bold text-white accent-gradient hover:opacity-95 self-start sm:self-auto">
+          + Upload Mod Baru
+        </button>
+      </div>
+      <div id="myUploadedModsList" class="space-y-3 overflow-y-auto flex-1 pr-1"></div>
+    </div>
+  </div>
+
+  <!-- ==================== MODAL 7: PENGATURAN AKUN ==================== -->
+  <div id="accountSettingsModal" class="hidden fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
+    <div class="theme-surface border rounded-3xl max-w-lg w-full p-6 sm:p-7 relative shadow-2xl max-h-[92vh] overflow-y-auto">
+      <button onclick="closeModal('accountSettingsModal')" class="absolute top-4 right-4 w-10 h-10 rounded-xl flex items-center justify-center hover:bg-slate-500/15 font-bold">✕</button>
+      <h3 class="font-display text-xl font-extrabold mb-1 pt-1">Pengaturan Akun</h3>
+      <p class="text-xs theme-text-muted mb-5">Perbarui foto profil, nama tampilan, tanggal lahir, dan kata sandi keamanan Anda.</p>
+
+      <form onsubmit="saveAccountSettings(event)" class="space-y-5">
+        <div class="flex items-center gap-4 p-4 rounded-2xl theme-input">
+          <div id="accSettingsAvatarPreview" class="w-16 h-16 rounded-full overflow-hidden border-2 border-cyan-400/60 bg-zinc-900 flex items-center justify-center text-xl font-display font-extrabold text-cyan-400 shrink-0">YS</div>
+          <div class="space-y-1.5">
+            <p class="text-xs font-bold">Foto Profil Akun</p>
+            <label class="cursor-pointer inline-flex items-center justify-center px-3.5 py-2 rounded-xl text-xs font-bold bg-cyan-500/20 theme-accent-text border border-cyan-500/35 hover:bg-cyan-500/30 transition touch-target">
+              <span>Ganti Foto Profil</span>
+              <input type="file" accept="image/jpeg,image/png,image/webp" onchange="handleAvatarFileChange(event, 'settings')" class="hidden" />
+            </label>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+          <div>
+            <label class="block text-xs font-bold mb-1">Nama Tampilan *</label>
+            <input type="text" id="accDisplayNameInput" required minlength="3" maxlength="40" class="w-full px-3.5 py-2.5 rounded-xl theme-input focus:outline-none focus:border-cyan-500" />
+          </div>
+          <div>
+            <label class="block text-xs font-bold mb-1">Tanggal Lahir *</label>
+            <input type="date" id="accBirthDateInput" required onchange="previewCalculatedAge('accBirthDateInput', 'accAgePreview')" class="w-full px-3.5 py-2.5 rounded-xl theme-input focus:outline-none focus:border-cyan-500" />
+            <p id="accAgePreview" class="text-[11px] font-semibold theme-accent-text mt-1"></p>
+          </div>
+        </div>
+
+        <div class="p-4 rounded-2xl theme-input space-y-3">
+          <div class="flex items-center justify-between">
+            <p class="text-xs font-bold uppercase tracking-wider theme-text-muted">Keamanan &amp; Kata Sandi</p>
+            <span id="accPasswordStatusBadge" class="text-[11px] font-bold text-emerald-400"></span>
+          </div>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <div>
+              <label class="block text-[11px] font-semibold mb-1">Kata Sandi Baru (Opsional)</label>
+              <input type="password" id="accNewPasswordInput" minlength="6" placeholder="Min. 6 karakter" class="w-full px-3.5 py-2 rounded-xl theme-surface border focus:outline-none focus:border-cyan-500" />
+            </div>
+            <div>
+              <label class="block text-[11px] font-semibold mb-1">Konfirmasi Kata Sandi</label>
+              <input type="password" id="accConfirmPasswordInput" minlength="6" placeholder="Ulangi kata sandi" class="w-full px-3.5 py-2 rounded-xl theme-surface border focus:outline-none focus:border-cyan-500" />
+            </div>
+          </div>
+        </div>
+
+        <button type="submit" class="w-full py-3.5 rounded-xl font-bold text-sm text-white accent-gradient accent-glow hover:opacity-95 transition">
+          Simpan Perubahan Akun
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- ==================== MODAL 8: DEVELOPER CONTROL CENTER (SIDEBAR WORKSPACE + 11 FITUR) ==================== -->
+  <div id="devDashboardModal" class="hidden fixed inset-0 z-50 bg-black/85 backdrop-blur-md flex items-center justify-center p-2 sm:p-4">
+    <div class="theme-surface border border-amber-500/40 rounded-3xl max-w-6xl w-full relative shadow-2xl h-[92vh] flex flex-col overflow-hidden">
+      <!-- Top Bar -->
+      <div class="px-5 py-4 border-b border-white/10 flex items-center justify-between gap-3 shrink-0">
+        <div class="flex items-center gap-3 min-w-0">
+          <span class="px-2.5 py-1 rounded-lg text-[11px] font-extrabold bg-amber-400 text-zinc-950 shrink-0">DEV CONTROL CENTER</span>
+          <h3 class="font-display text-base sm:text-lg font-extrabold truncate">Workspace Pengembang YOMAN START</h3>
+          <span id="devRoleHeaderLabel" class="hidden md:inline text-xs text-amber-400 font-bold"></span>
+        </div>
+        <button onclick="closeModal('devDashboardModal')" class="w-10 h-10 rounded-xl flex items-center justify-center hover:bg-slate-500/15 font-bold shrink-0">✕</button>
+      </div>
+
+      <!-- Workspace Body: Sidebar + Main Panel -->
+      <div class="flex-1 flex flex-col md:flex-row overflow-hidden">
+        <!-- Sidebar Navigation -->
+        <aside class="md:w-64 border-b md:border-b-0 md:border-r border-white/10 p-3 flex md:flex-col gap-1.5 overflow-x-auto shrink-0 text-xs">
+          <button onclick="switchDevTab('analytics')" id="devTab-analytics" class="dev-side-btn px-3.5 py-2.5 rounded-xl theme-tab-active text-left shrink-0">📊 Analitik &amp; Realtime</button>
+          <button onclick="switchDevTab('users')" id="devTab-users" class="dev-side-btn px-3.5 py-2.5 rounded-xl theme-tab-inactive text-left shrink-0">👥 Pengguna, Ban &amp; Role</button>
+          <button onclick="switchDevTab('identity')" id="devTab-identity" class="dev-side-btn px-3.5 py-2.5 rounded-xl theme-tab-inactive text-left shrink-0">🎨 Logo &amp; Identitas Web</button>
+          <button onclick="switchDevTab('moderation')" id="devTab-moderation" class="dev-side-btn px-3.5 py-2.5 rounded-xl theme-tab-inactive text-left shrink-0">🛡️ Moderasi Mod &amp; Komentar</button>
+          <button onclick="switchDevTab('directories')" id="devTab-directories" class="dev-side-btn px-3.5 py-2.5 rounded-xl theme-tab-inactive text-left shrink-0">🔗 Direktori Game &amp; Link</button>
+          <button onclick="switchDevTab('tickets')" id="devTab-tickets" class="dev-side-btn px-3.5 py-2.5 rounded-xl theme-tab-inactive text-left shrink-0">🔑 Tiket Sandi &amp; Log Login</button>
+        </aside>
+
+        <!-- Dynamic Workspace Content -->
+        <div id="devDashboardBody" class="flex-1 p-4 sm:p-6 overflow-y-auto space-y-6"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== MODAL 9: KONFIRMASI KELUAR (LOGOUT WARNING) ==================== -->
+  <div id="logoutConfirmModal" class="hidden fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
+    <div class="theme-surface border border-red-500/40 rounded-3xl max-w-sm w-full p-6 text-center space-y-5 shadow-2xl">
+      <div class="w-14 h-14 rounded-2xl bg-red-500/15 text-red-500 border border-red-500/35 mx-auto flex items-center justify-center">
+        <svg class="w-7 h-7" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+        </svg>
+      </div>
+      <div class="space-y-1.5">
+        <h3 class="font-display text-lg font-extrabold text-red-500">Konfirmasi Keluar Akun</h3>
+        <p class="text-sm theme-text-muted">Apakah Anda yakin ingin keluar dari akun YOMAN START?</p>
+      </div>
+      <div class="grid grid-cols-2 gap-3 pt-1">
+        <button onclick="closeModal('logoutConfirmModal')" class="py-3 px-4 rounded-xl font-bold text-sm theme-card hover:border-slate-400 transition">Batal</button>
+        <button onclick="confirmLogoutUser()" class="py-3 px-4 rounded-xl font-bold text-sm text-white bg-red-600 hover:bg-red-500 transition">Ya, Keluar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== MODAL 10: LIGHTBOX PREVIEW SCREENSHOT ==================== -->
+  <div id="imageLightboxModal" onclick="closeModal('imageLightboxModal')" class="hidden fixed inset-0 z-50 bg-black/90 backdrop-blur-md flex items-center justify-center p-4">
+    <div class="relative max-w-4xl w-full flex flex-col items-center" onclick="event.stopPropagation()">
+      <button onclick="closeModal('imageLightboxModal')" class="self-end mb-3 px-4 py-2 rounded-xl bg-white/15 text-white text-xs font-bold hover:bg-white/25">✕ Tutup Preview</button>
+      <img id="lightboxPreviewImg" src="" alt="Screenshot Pengguna" class="max-h-[80vh] w-auto rounded-2xl border border-white/20 shadow-2xl object-contain" />
+    </div>
+  </div>
+
+  <!-- ==================== MODAL 11: PENGATURAN TEMA TAMPILAN (PENGGUNA UMUM) ==================== -->
+  <div id="themeModal" class="hidden fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
+    <div class="theme-surface border rounded-3xl max-w-md w-full p-6 sm:p-7 relative shadow-2xl">
+      <button onclick="closeModal('themeModal')" class="absolute top-4 right-4 w-10 h-10 rounded-xl flex items-center justify-center hover:bg-slate-500/15 font-bold">✕</button>
+      <h3 class="font-display text-xl font-extrabold mb-1 pt-1">Pengaturan Tampilan</h3>
+      <p class="text-xs theme-text-muted mb-5">Pilih tema antarmuka dan cek informasi perangkat Anda.</p>
+
+      <div class="space-y-5">
+        <div class="p-3.5 rounded-2xl theme-input flex items-center justify-between text-xs">
+          <span class="theme-text-muted">Perangkat Terdeteksi:</span>
+          <span id="deviceInfoBadge" class="font-bold theme-accent-text">Mendeteksi...</span>
+        </div>
+
+        <div>
+          <p class="text-xs font-bold uppercase tracking-wider theme-text-muted mb-2.5">Tema Visual (3 Pilihan)</p>
+          <div class="grid grid-cols-3 gap-2.5 text-xs font-bold">
+            <button onclick="setTheme('dark')" class="p-3 rounded-xl border border-zinc-700 bg-zinc-900 text-white hover:border-cyan-400 transition">Dark Mode</button>
+            <button onclick="setTheme('light')" class="p-3 rounded-xl border border-slate-300 bg-white text-slate-900 hover:border-sky-500 transition">Light Mode</button>
+            <button onclick="setTheme('cyberpunk')" class="p-3 rounded-xl border border-pink-500/50 bg-indigo-950 text-pink-300 hover:border-pink-400 transition">Cyberpunk</button>
+          </div>
+        </div>
+
+        <div class="pt-3 border-t border-white/10 text-center text-xs theme-text-muted">
+          Dikembangkan oleh <strong class="theme-accent-text">RAFLI YASIN</strong> • YOMAN START v1.0
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== TOAST NOTIFICATION ==================== -->
+  <div id="toastNotification" class="hidden fixed bottom-5 right-5 left-5 sm:left-auto z-50 px-5 py-3.5 rounded-2xl bg-zinc-900 border border-cyan-400/60 text-sm font-semibold text-white shadow-2xl"></div>
+
+  <!-- ==================== JAVASCRIPT APPLICATION LOGIC ==================== -->
+  <script>
+    // ---------- SUPER ADMIN CONSTANTS & DEFAULT OFFICIAL LOGO ----------
+    const SUPER_ADMIN_EMAIL = 'rafliyasin500@gmail.com';
+    const SUPER_ADMIN_PASS = 'Genta mc99';
+    const SUPER_ADMIN_ID = 'dev-super-rafli';
+
+    const OFFICIAL_DEFAULT_LOGO = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+      <rect width="512" height="512" rx="64" fill="#050507"/>
+      <g fill="#ffffff">
+        <polygon points="145,155 182,135 182,225 224,200 224,110 250,95 250,275 182,315 182,272 224,247 224,225 145,270"/>
+        <polygon points="262,95 367,155 367,195 292,152 292,188 367,232 367,315 262,255 262,215 337,258 337,222 262,178"/>
+      </g>
+      <text x="256" y="382" fill="#ffffff" font-family="Arial Black, Impact, sans-serif" font-size="42" font-weight="900" letter-spacing="3" text-anchor="middle">YOMAN START</text>
+      <line x1="72" y1="414" x2="108" y2="414" stroke="#0ea5e9" stroke-width="4" stroke-linecap="round"/>
+      <text x="256" y="419" fill="#e2e8f0" font-family="Arial, sans-serif" font-size="14" font-weight="700" letter-spacing="2.2" text-anchor="middle">TUTORIAL • GAME • SOLUSI ERROR</text>
+      <line x1="404" y1="414" x2="440" y2="414" stroke="#0ea5e9" stroke-width="4" stroke-linecap="round"/>
+    </svg>`);
+
+    const STORAGE_KEYS = {
+      CURRENT_USER: 'yoman_current_user_v6',
+      USERS_DB: 'yoman_users_db_v6',
+      MODS: 'yoman_mods_v6',
+      DIRECTORIES: 'yoman_directories_v6',
+      FEEDBACK: 'yoman_feedback_v6',
+      THEME: 'yoman_theme_v6',
+      SITE_CONFIG: 'yoman_site_config_v6',
+      DOWNLOADED_IDS: 'yoman_downloaded_v6',
+      RESET_TICKETS: 'yoman_reset_tickets_v6',
+      DEV_NOTIFS: 'yoman_dev_notifs_v6',
+      LOGIN_LOGS: 'yoman_login_logs_v6',
+      VISITOR_STATS: 'yoman_visitor_stats_v6',
+      ACTIVE_SESSIONS: 'yoman_active_sessions_v6',
+      MOD_REQUESTS: 'yoman_mod_requests_v6',
+      REQ_COOLDOWN: 'yoman_req_cooldown_v6'
+    };
+
+    const VALID_PAGES = ['lobi', 'download-game', 'jelajah-mod', 'info-masukan'];
+    const ALLOWED_MOD_EXTENSIONS = ['.zip', '.rar', '.7z', '.asi', '.dll', '.xml', '.txt', '.pak', '.ini', '.lua'];
+    const MAX_MOD_FILE_BYTES = 50 * 1024 * 1024;
+    const MAX_RAW_IMAGE_BYTES = 8 * 1024 * 1024;
+    const COOLDOWN_STEPS_SECONDS = [60, 300, 900, 3600]; // 1m -> 5m -> 15m -> 60m
+
+    // ---------- DEFAULT DATA ----------
+    const defaultSiteConfig = {
+      title: 'YOMAN START',
+      tagline: 'TUTORIAL • GAME • SOLUSI ERROR',
+      heroTitle: 'Portal Game PC, Mod Komunitas & Solusi Error',
+      communityUrl: 'https://whatsapp.com/channel/0029VbDB0GP7T8bVweu13f1U',
+      logoDataUrl: OFFICIAL_DEFAULT_LOGO
+    };
+
+    const defaultUsersDb = [
+      {
+        userId: SUPER_ADMIN_ID,
+        role: 'super_admin',
+        verified: true,
+        banned: false,
+        banReason: '',
+        method: 'Super Developer Auth',
+        authIdentifier: SUPER_ADMIN_EMAIL,
+        displayName: 'Rafli Yasin',
+        birthDate: '2006-04-13',
+        avatar: null,
+        password: SUPER_ADMIN_PASS,
+        profileCompleted: true
+      },
+      {
+        userId: 'user-dimas',
+        role: 'user',
+        verified: true,
+        banned: false,
+        banReason: '',
+        method: 'Google',
+        authIdentifier: 'dimas.aditya@gmail.com',
+        displayName: 'Dimas Aditya',
+        birthDate: '2004-08-19',
+        avatar: null,
+        password: '',
+        profileCompleted: true
+      },
+      {
+        userId: 'user-fajar',
+        role: 'user',
+        verified: false,
+        banned: false,
+        banReason: '',
+        method: 'WhatsApp OTP',
+        authIdentifier: '081234567890',
+        displayName: 'Fajar Nugraha',
+        birthDate: '2005-02-11',
+        avatar: null,
+        password: '',
+        profileCompleted: true
+      }
+    ];
+
+    function createDefaultModThumbnail(title, game) {
+      const safeTitle = String(title || 'YOMAN START MOD').slice(0, 28).replace(/[<>&"']/g, '');
+      const safeGame = String(game || 'PC GAME').slice(0, 32).replace(/[<>&"']/g, '');
+      const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="800" height="450" viewBox="0 0 800 450">
+        <defs><linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#09090b"/><stop offset="50%" stop-color="#17153b"/><stop offset="100%" stop-color="#0e7490"/></linearGradient></defs>
+        <rect width="800" height="450" fill="url(#bg)"/>
+        <circle cx="680" cy="90" r="140" fill="#22d3ee" fill-opacity="0.12"/>
+        <rect x="44" y="44" width="170" height="32" rx="8" fill="#22d3ee" fill-opacity="0.2"/>
+        <text x="129" y="65" fill="#22d3ee" font-family="sans-serif" font-size="13" font-weight="bold" text-anchor="middle">YOMAN START MOD</text>
+        <text x="44" y="230" fill="#ffffff" font-family="sans-serif" font-size="32" font-weight="bold">${safeTitle}</text>
+        <text x="44" y="272" fill="#a5f3fc" font-family="sans-serif" font-size="18">${safeGame}</text>
+      </svg>`;
+      return 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svg);
+    }
+
+    const defaultDirectories = [
+      {
+        id: 'dir-ankergames',
+        title: 'AnkerGames.net',
+        badge: 'Pre-Installed PC Games',
+        logo: 'https://placehold.co/320x140/09090b/22d3ee?text=AnkerGames.net',
+        url: 'https://whatsapp.com/channel/0029VbDB0GP7T8bVweu13f1U',
+        description: 'AnkerGames.net menyediakan katalog game PC gratis dalam bentuk pre-installed (siap dimainkan tanpa proses instalasi rumit) dengan kategori genre Action, Adventure, RPG, Simulation, Horror, Open World, Anime, dan Turn-Based.',
+        genres: ['Action', 'Adventure', 'RPG', 'Simulation', 'Horror', 'Open World', 'Anime', 'Turn-Based']
+      }
+    ];
+
+    const defaultMods = [
+      {
+        id: 'mod-1',
+        name: 'Bahasa Indonesia Subtitle & UI Patch',
+        game: 'Resident Evil 4 Remake',
+        author: 'Rafli Yasin',
+        authorId: SUPER_ADMIN_ID,
+        description: 'Terjemahan teks dialog, menu, dan dokumen lengkap ke Bahasa Indonesia.\n\nCara Pasang:\n1. Ekstrak arsip patch ke folder utama game Resident Evil 4 Remake.\n2. Jalankan melalui Fluffy Mod Manager dan aktifkan patch.',
+        thumbnail: createDefaultModThumbnail('Indo Subtitle & UI Patch', 'Resident Evil 4 Remake'),
+        fileName: 'RE4R_Indo_Patch_YomanStart.txt',
+        fileContent: 'YOMAN START MOD PACKAGE\nMod: Bahasa Indonesia Subtitle & UI Patch\nTarget Game: Resident Evil 4 Remake\nAuthor: Rafli Yasin',
+        fileUrl: null,
+        downloads: 342,
+        createdAt: '15 Nov 2026',
+        reviews: [
+          {
+            id: 'rev-101',
+            author: 'Dimas Aditya',
+            authorId: 'user-dimas',
+            authorAvatar: null,
+            rating: 5,
+            comment: 'Terjemahannya rapi banget dan jalan mulus di versi terbaru tanpa crash!',
+            screenshots: [],
+            date: '16 Nov 2026'
+          }
+        ]
+      },
+      {
+        id: 'mod-2',
+        name: 'Menyoo & Map Indonesia Street Pack',
+        game: 'Grand Theft Auto V',
+        author: 'Dimas Aditya',
+        authorId: 'user-dimas',
+        description: 'Paket konfigurasi XML map bernuansa jalanan Indonesia lengkap dengan dukungan Script Hook V & Menyoo SP.\n\nCara Pasang:\n1. Pastikan Script Hook V & Menyoo.asi sudah terpasang.\n2. Salin file XML ke folder GTAV/menyooStuff/Spooner.',
+        thumbnail: createDefaultModThumbnail('Menyoo & Map Indo Pack', 'Grand Theft Auto V'),
+        fileName: 'GTAV_IndoStreet_XML_Pack.txt',
+        fileContent: 'YOMAN START MOD PACKAGE\nMod: Menyoo & Map Indonesia Street Pack\nTarget Game: Grand Theft Auto V',
+        fileUrl: null,
+        downloads: 518,
+        createdAt: '16 Nov 2026',
+        reviews: []
+      }
+    ];
+
+    // ---------- LOAD STATE ----------
+    let siteConfig = { ...defaultSiteConfig, ...(JSON.parse(localStorage.getItem(STORAGE_KEYS.SITE_CONFIG) || 'null') || {}) };
+    let usersDb = JSON.parse(localStorage.getItem(STORAGE_KEYS.USERS_DB) || 'null') || defaultUsersDb;
+    let currentUser = JSON.parse(localStorage.getItem(STORAGE_KEYS.CURRENT_USER) || 'null');
+    let modsList = JSON.parse(localStorage.getItem(STORAGE_KEYS.MODS) || 'null') || defaultMods;
+    let directoriesList = JSON.parse(localStorage.getItem(STORAGE_KEYS.DIRECTORIES) || 'null') || defaultDirectories;
+    let feedbackList = JSON.parse(localStorage.getItem(STORAGE_KEYS.FEEDBACK) || 'null') || [
+      { id: 'fb-1', author: 'Dimas Aditya', authorId: 'user-dimas', text: 'Mantap bang Rafli! Sistem pencarian typo dan ulasan terverifikasi unduhan bikin komunitas makin nyaman.', date: '17 Nov 2026' }
+    ];
+    let downloadedModIds = JSON.parse(localStorage.getItem(STORAGE_KEYS.DOWNLOADED_IDS) || '[]');
+    let resetTickets = JSON.parse(localStorage.getItem(STORAGE_KEYS.RESET_TICKETS) || 'null') || [
+      { id: 'tkt-1', identifier: 'Fajar Nugraha (081234567890)', note: 'Lupa kata sandi akun setelah ganti HP', status: 'Menunggu', createdAt: '18 Nov 2026, 08:30' }
+    ];
+    let devNotifications = JSON.parse(localStorage.getItem(STORAGE_KEYS.DEV_NOTIFS) || 'null') || [
+      { id: 'notif-1', title: 'Permintaan Lupa Password', message: 'Akun "Fajar Nugraha" mengajukan reset kata sandi.', time: 'Baru saja', unread: true }
+    ];
+    let loginLogs = JSON.parse(localStorage.getItem(STORAGE_KEYS.LOGIN_LOGS) || 'null') || [
+      { id: 'log-1', name: 'Dimas Aditya', method: 'Google', device: 'Windows 11 • Chrome', time: '18 Nov 2026, 09:15' },
+      { id: 'log-2', name: 'Fajar Nugraha', method: 'WhatsApp OTP', device: 'Android • Chrome Mobile', time: '18 Nov 2026, 10:42' }
+    ];
+    let visitorStats = JSON.parse(localStorage.getItem(STORAGE_KEYS.VISITOR_STATS) || 'null') || [
+      { day: 'Sen', visits: 142 }, { day: 'Sel', visits: 198 }, { day: 'Rab', visits: 235 },
+      { day: 'Kam', visits: 210 }, { day: 'Jum', visits: 289 }, { day: 'Sab', visits: 340 }, { day: 'Min', visits: 312 }
+    ];
+    let modRequestsList = JSON.parse(localStorage.getItem(STORAGE_KEYS.MOD_REQUESTS) || 'null') || [
+      { id: 'req-1', author: 'Dimas Aditya', category: 'Mod Bahasa Indonesia', title: 'Ghost of Tsushima Indo Subtitle', details: 'Mohon patch teks Bahasa Indonesia untuk versi Director Cut PC.', date: '18 Nov 2026' }
+    ];
+
+    // Ephemeral UI State
+    const tabSessionId = 'sess-' + Math.random().toString(36).slice(2, 9);
+    let pendingAuthUser = null;
+    let generatedOtp = '';
+    let pendingOnboardingAvatar = null;
+    let pendingSettingsAvatar = null;
+    let pendingCompressedThumbnail = null;
+    let pendingDirLogoDataUrl = null;
+    let pendingReviewScreenshots = [];
+    let selectedStarRating = 5;
+    let activeDetailModId = null;
+    let activeDevTab = 'analytics';
+    let devUserSearchQuery = '';
+    let secretClickCount = 0;
+    let secretClickTimer = null;
+    let cooldownIntervalId = null;
+
+    // ---------- SUPER ADMIN PROTECTION ----------
+    function enforceSuperAdminIntegrity() {
+      let admin = usersDb.find(u => u.userId === SUPER_ADMIN_ID || u.authIdentifier === SUPER_ADMIN_EMAIL);
+      if (!admin) {
+        admin = defaultUsersDb[0];
+        usersDb.unshift(admin);
+      } else {
+        admin.userId = SUPER_ADMIN_ID;
+        admin.role = 'super_admin';
+        admin.verified = true;
+        admin.banned = false;
+        admin.banReason = '';
+        admin.authIdentifier = SUPER_ADMIN_EMAIL;
+      }
+      saveUsersDb();
+    }
+
+    function saveUsersDb() { localStorage.setItem(STORAGE_KEYS.USERS_DB, JSON.stringify(usersDb)); }
+    function isUserDeveloper(user) { return user && (user.role === 'super_admin' || user.role === 'co_dev'); }
+    function isUserVerified(userId, authorName) {
+      const u = usersDb.find(item => item.userId === userId || item.displayName === authorName);
+      return Boolean(u && (u.verified || u.role === 'super_admin'));
+    }
+    function isUserBanned(userId, authorName) {
+      const u = usersDb.find(item => item.userId === userId || item.displayName === authorName);
+      return Boolean(u && u.banned && u.role !== 'super_admin');
+    }
+    function renderVerifiedBadgeHtml(userId, authorName) {
+      if (!isUserVerified(userId, authorName)) return '';
+      return `<span title="Kreator Terverifikasi Centang Biru" class="inline-flex items-center justify-center w-4 h-4 rounded-full bg-sky-500 text-white text-[10px] font-bold shrink-0 ml-1">✓</span>`;
+    }
+
+    // ---------- INITIALIZATION ----------
+    document.addEventListener('DOMContentLoaded', () => {
+      enforceSuperAdminIntegrity();
+      syncCurrentUserFromDb();
+      applySiteIdentity();
+      recordDailyVisit();
+      startRealtimeSessionHeartbeat();
+
+      initThemeAndDevice();
+      renderAuthHeader();
+      renderDevControls();
+      renderLobbyHighlights();
+      renderGameDirectories();
+      renderMods();
+      renderFeedbackSection();
+
+      document.addEventListener('click', (e) => {
+        const pDrop = document.getElementById('profileDropdownMenu');
+        const pTrig = document.getElementById('profileDropdownTrigger');
+        if (pDrop && !pDrop.classList.contains('hidden') && !pDrop.contains(e.target) && (!pTrig || !pTrig.contains(e.target))) {
+          pDrop.classList.add('hidden');
+        }
+        const bDrop = document.getElementById('notifBellDropdown');
+        const bTrig = document.getElementById('notifBellTrigger');
+        if (bDrop && !bDrop.classList.contains('hidden') && !bDrop.contains(e.target) && (!bTrig || !bTrig.contains(e.target))) {
+          bDrop.classList.add('hidden');
+        }
+        const sDrop = document.getElementById('globalSearchDropdown');
+        const sInput = document.getElementById('globalFuzzySearchInput');
+        if (sDrop && !sDrop.classList.contains('hidden') && !sDrop.contains(e.target) && (!sInput || !sInput.contains(e.target))) {
+          sDrop.classList.add('hidden');
+        }
+      });
+
+      if (currentUser && !currentUser.profileCompleted) openOnboardingModal();
+
+      const initialHash = window.location.hash.replace('#', '');
+      const initialPage = VALID_PAGES.includes(initialHash) ? initialHash : 'lobi';
+      switchPage(initialPage, false);
+    });
+
+    window.addEventListener('hashchange', () => {
+      const target = window.location.hash.replace('#', '');
+      if (VALID_PAGES.includes(target)) switchPage(target, false);
+    });
+
+    function applySiteIdentity() {
+      const logoSrc = siteConfig.logoDataUrl || OFFICIAL_DEFAULT_LOGO;
+      document.querySelectorAll('.ys-logo-img').forEach(img => { img.src = logoSrc; });
+      document.getElementById('siteBrandTitleNav').textContent = siteConfig.title;
+      document.getElementById('siteBrandTaglineNav').textContent = siteConfig.tagline;
+      document.getElementById('heroBadgeTagline').textContent = siteConfig.tagline;
+      document.getElementById('heroMainTitle').textContent = siteConfig.heroTitle;
+      document.getElementById('communityJoinLinkBtn').href = siteConfig.communityUrl;
+      document.getElementById('infoCommunityLink').href = siteConfig.communityUrl;
+    }
+
+    function syncCurrentUserFromDb() {
+      if (!currentUser) return;
+      const fresh = usersDb.find(u => u.userId === currentUser.userId || u.authIdentifier === currentUser.authIdentifier);
+      if (!fresh) {
+        currentUser = null;
+        localStorage.removeItem(STORAGE_KEYS.CURRENT_USER);
+        return;
+      }
+      currentUser = fresh;
+      localStorage.setItem(STORAGE_KEYS.CURRENT_USER, JSON.stringify(currentUser));
+
+      if (currentUser.banned && currentUser.role !== 'super_admin') {
+        document.getElementById('bannedAccountName').textContent = currentUser.displayName;
+        document.getElementById('bannedAccountReason').textContent = currentUser.banReason || 'Melanggar panduan komunitas YOMAN START.';
+        document.getElementById('bannedOverlay').classList.remove('hidden');
+      } else {
+        document.getElementById('bannedOverlay').classList.add('hidden');
+      }
+    }
+
+    function logoutBannedUser() {
+      document.getElementById('bannedOverlay').classList.add('hidden');
+      confirmLogoutUser();
+    }
+
+    // ---------- VISITOR ANALYTICS & REALTIME MONITOR ----------
+    function recordDailyVisit() {
+      const days = ['Min', 'Sen', 'Sel', 'Rab', 'Kam', 'Jum', 'Sab'];
+      const todayLabel = days[new Date().getDay()];
+      const entry = visitorStats.find(d => d.day === todayLabel);
+      if (entry) entry.visits += 1;
+      localStorage.setItem(STORAGE_KEYS.VISITOR_STATS, JSON.stringify(visitorStats));
+    }
+
+    function getDeviceSummary() {
+      const ua = navigator.userAgent;
+      let os = 'Desktop';
+      if (/Windows/i.test(ua)) os = 'Windows';
+      else if (/Android/i.test(ua)) os = 'Android';
+      else if (/iPhone/i.test(ua)) os = 'iPhone (iOS)';
+      else if (/iPad/i.test(ua)) os = 'iPad (iPadOS)';
+      else if (/Mac/i.test(ua)) os = 'MacBook (macOS)';
+      else if (/Linux/i.test(ua)) os = 'Linux';
+
+      let browser = 'Browser';
+      if (/Edg/i.test(ua)) browser = 'Edge';
+      else if (/Chrome/i.test(ua)) browser = 'Chrome';
+      else if (/Safari/i.test(ua)) browser = 'Safari';
+      else if (/Firefox/i.test(ua)) browser = 'Firefox';
+      return `${os} • ${browser}`;
+    }
+
+    function startRealtimeSessionHeartbeat() {
+      const updateHeartbeat = () => {
+        const now = Date.now();
+        let sessions = JSON.parse(localStorage.getItem(STORAGE_KEYS.ACTIVE_SESSIONS) || '[]');
+        sessions = sessions.filter(s => now - s.lastSeen < 25000 && s.sessionId !== tabSessionId);
+        sessions.push({
+          sessionId: tabSessionId,
+          name: currentUser ? currentUser.displayName : 'Pengunjung Tamu',
+          role: currentUser ? currentUser.role : 'guest',
+          device: getDeviceSummary(),
+          lastSeen: now
+        });
+        localStorage.setItem(STORAGE_KEYS.ACTIVE_SESSIONS, JSON.stringify(sessions));
+        const activeEl = document.getElementById('statActiveUsers');
+        if (activeEl) activeEl.textContent = sessions.length;
+      };
+      updateHeartbeat();
+      setInterval(updateHeartbeat, 8000);
+    }
+
+    // ---------- SPA PAGE ROUTER ----------
+    function switchPage(pageId, updateHash = true) {
+      if (!VALID_PAGES.includes(pageId)) pageId = 'lobi';
+      VALID_PAGES.forEach(id => {
+        const section = document.getElementById('page-' + id);
+        if (section) {
+          if (id === pageId) section.classList.remove('hidden');
+          else section.classList.add('hidden');
+        }
+      });
+      document.querySelectorAll('.nav-tab-btn').forEach(btn => {
+        const target = btn.getAttribute('data-nav');
+        if (target === pageId) {
+          btn.classList.add('theme-tab-active');
+          btn.classList.remove('theme-tab-inactive');
+        } else {
+          btn.classList.remove('theme-tab-active');
+          btn.classList.add('theme-tab-inactive');
+        }
+      });
+      if (updateHash) history.replaceState(null, '', '#' + pageId);
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    // ---------- THEME & HELPERS ----------
+    function initThemeAndDevice() {
+      const badge = document.getElementById('deviceInfoBadge');
+      if (badge) badge.textContent = getDeviceSummary();
+      const savedTheme = localStorage.getItem(STORAGE_KEYS.THEME) || 'dark';
+      setTheme(savedTheme, false);
+    }
+
+    function setTheme(themeName, notify = true) {
+      document.documentElement.setAttribute('data-theme', themeName);
+      localStorage.setItem(STORAGE_KEYS.THEME, themeName);
+      if (notify) showToast(`Tema aktif: ${themeName.toUpperCase()}`);
+    }
+
+    function openModal(id) { document.getElementById(id).classList.remove('hidden'); }
+    function closeModal(id) { document.getElementById(id).classList.add('hidden'); }
+    function toggleMobileMenu() { document.getElementById('mobileMenu').classList.toggle('hidden'); }
+    function toggleProfileDropdown() { document.getElementById('profileDropdownMenu')?.classList.toggle('hidden'); }
+    function toggleNotificationsDropdown() { document.getElementById('notifBellDropdown')?.classList.toggle('hidden'); }
+    function openLightboxImage(src) {
+      document.getElementById('lightboxPreviewImg').src = src;
+      openModal('imageLightboxModal');
+    }
+    function showToast(msg) {
+      const toast = document.getElementById('toastNotification');
+      toast.textContent = msg;
+      toast.classList.remove('hidden');
+      clearTimeout(window.__toastTimer);
+      window.__toastTimer = setTimeout(() => toast.classList.add('hidden'), 3600);
+    }
+
+    function compressImageFile(file, maxWidth = 800, quality = 0.78) {
+      return new Promise((resolve, reject) => {
+        if (!['image/jpeg', 'image/png', 'image/webp'].includes(file.type)) {
+          reject('Format gambar harus JPG, PNG, atau WEBP.');
+          return;
+        }
+        if (file.size > MAX_RAW_IMAGE_BYTES) {
+          reject('Ukuran gambar maksimal 8 MB.');
+          return;
+        }
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          const img = new Image();
+          img.onload = function() {
+            const canvas = document.createElement('canvas');
+            const scale = img.width > maxWidth ? maxWidth / img.width : 1;
+            canvas.width = Math.round(img.width * scale);
+            canvas.height = Math.round(img.height * scale);
+            const ctx = canvas.getContext('2d');
+            ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+            resolve(canvas.toDataURL('image/jpeg', quality));
+          };
+          img.onerror = () => reject('Gagal memproses file gambar.');
+          img.src = e.target.result;
+        };
+        reader.onerror = () => reject('Gagal membaca file gambar.');
+        reader.readAsDataURL(file);
+      });
+    }
+
+    function getInitials(name) {
+      const parts = String(name || 'YS').trim().split(/\s+/);
+      if (parts.length === 1) return parts[0].slice(0, 2).toUpperCase();
+      return (parts[0][0] + parts[1][0]).toUpperCase();
+    }
+
+    function renderAvatarCircle(avatarUrl, name, sizeClass = 'w-8 h-8 text-xs') {
+      if (avatarUrl) {
+        return `<img src="${avatarUrl}" alt="${escapeHtml(name)}" class="${sizeClass} rounded-full object-cover border border-cyan-400/50 shrink-0" />`;
+      }
+      return `<div class="${sizeClass} rounded-full bg-gradient-to-br from-cyan-500 to-violet-600 text-white font-display font-bold flex items-center justify-center shrink-0">${escapeHtml(getInitials(name))}</div>`;
+    }
+
+    // ---------- FUZZY SEARCH (TOLERAN TYPO) ----------
+    function computeFuzzyScore(query, targetText) {
+      const q = query.toLowerCase().replace(/[^a-z0-9]/g, '');
+      const t = targetText.toLowerCase().replace(/[^a-z0-9]/g, '');
+      if (!q) return 0;
+      if (t.includes(q)) return 100;
+
+      // Subsequence & character overlap tolerance for typos (e.g. "residnt evl" -> "residentevil")
+      let qIdx = 0;
+      let matches = 0;
+      for (let i = 0; i < t.length && qIdx < q.length; i++) {
+        if (t[i] === q[qIdx]) {
+          matches++;
+          qIdx++;
+        }
+      }
+      const seqRatio = matches / q.length;
+      if (seqRatio >= 0.72) return Math.round(seqRatio * 85);
+      return 0;
+    }
+
+    function handleGlobalFuzzySearch(rawQuery) {
+      const dropdown = document.getElementById('globalSearchDropdown');
+      const q = rawQuery.trim();
+      if (!q) {
+        dropdown.classList.add('hidden');
+        return;
+      }
+
+      const visibleMods = getVisibleMods();
+      const scored = visibleMods
+        .map(mod => {
+          const best = Math.max(
+            computeFuzzyScore(q, mod.name),
+            computeFuzzyScore(q, mod.game),
+            computeFuzzyScore(q, mod.author)
+          );
+          return { mod, score: best };
+        })
+        .filter(item => item.score >= 60)
+        .sort((a, b) => b.score - a.score);
+
+      if (scored.length === 0) {
+        dropdown.innerHTML = `<div class="p-4 text-xs theme-text-muted text-center">Tidak ada kecocokan untuk "${escapeHtml(q)}"</div>`;
+      } else {
+        dropdown.innerHTML = scored.map(({ mod }) => `
+          <button onclick="openModDetailModal('${mod.id}'); document.getElementById('globalSearchDropdown').classList.add('hidden');" class="w-full p-3 flex items-center gap-3 hover:bg-cyan-500/15 transition text-left border-b border-white/5 last:border-0">
+            <img src="${mod.thumbnail}" alt="${escapeHtml(mod.name)}" class="w-12 h-9 rounded-lg object-cover bg-black shrink-0" />
+            <div class="min-w-0 flex-1">
+              <p class="text-xs font-bold truncate">${escapeHtml(mod.name)}</p>
+              <p class="text-[11px] theme-accent-text truncate">${escapeHtml(mod.game)} • ${escapeHtml(mod.author)}</p>
+            </div>
+          </button>
+        `).join('');
+      }
+      dropdown.classList.remove('hidden');
+    }
+
+    // ---------- AUTHENTICATION: GOOGLE POPUP + WHATSAPP OTP NOTIFICATION ----------
+    function registerSecretDevClick() {
+      secretClickCount += 1;
+      clearTimeout(secretClickTimer);
+      secretClickTimer = setTimeout(() => { secretClickCount = 0; }, 2200);
+      if (secretClickCount >= 5) {
+        secretClickCount = 0;
+        revealSecretDevLoginTab();
+        openModal('loginModal');
+        switchAuthTab('dev');
+        showToast('Akses Super Developer Utama Terbuka.');
+      }
+    }
+
+    function revealSecretDevLoginTab() {
+      const grid = document.getElementById('authTabsGrid');
+      const devBtn = document.getElementById('tabBtnDevSecret');
+      grid.classList.remove('grid-cols-3');
+      grid.classList.add('grid-cols-4');
+      devBtn.classList.remove('hidden');
+    }
+
+    function switchAuthTab(method) {
+      const map = { google: 'Google', phone: 'Phone', forgot: 'Forgot', dev: 'DevSecret' };
+      const panelMap = { google: 'Google', phone: 'Phone', forgot: 'Forgot', dev: 'Dev' };
+      Object.keys(map).forEach(key => {
+        const btn = document.getElementById('tabBtn' + map[key]);
+        const panel = document.getElementById('authPanel' + panelMap[key]);
+        if (!btn || !panel) return;
+        if (key === method) {
+          btn.classList.add('theme-tab-active');
+          btn.classList.remove('theme-tab-inactive');
+          panel.classList.remove('hidden');
+        } else {
+          btn.classList.remove('theme-tab-active');
+          btn.classList.add('theme-tab-inactive');
+          panel.classList.add('hidden');
+        }
+      });
+    }
+
+    function openGoogleAccountChooserPopup() {
+      openModal('googleChooserModal');
+    }
+
+    function selectGoogleAccount(fullName, email, birthDate) {
+      closeModal('googleChooserModal');
+      const existing = usersDb.find(u => u.authIdentifier.toLowerCase() === email.toLowerCase());
+      if (existing) {
+        if (existing.banned) {
+          currentUser = existing;
+          localStorage.setItem(STORAGE_KEYS.CURRENT_USER, JSON.stringify(currentUser));
+          closeModal('loginModal');
+          syncCurrentUserFromDb();
+          return;
+        }
+        finalizeLoginSession(existing, 'Google');
+        return;
+      }
+
+      // Google automatically provides fullName and birthDate -> confirm in onboarding
+      pendingAuthUser = {
+        userId: 'user-' + Date.now(),
+        role: 'user',
+        verified: false,
+        banned: false,
+        banReason: '',
+        method: 'Google',
+        authIdentifier: email,
+        displayName: fullName,
+        birthDate: birthDate,
+        avatar: null,
+        password: '',
+        profileCompleted: false
+      };
+      closeModal('loginModal');
+      openOnboardingModal('Google (Nama & Tanggal Lahir Diambil Otomatis)');
+    }
+
+    function loginWithGoogleEmail() {
+      const email = document.getElementById('googleEmailInput').value.trim().toLowerCase();
+      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+        showToast('Masukkan alamat email Google yang valid.');
+        return;
+      }
+
+      if (email === SUPER_ADMIN_EMAIL.toLowerCase()) {
+        revealSecretDevLoginTab();
+        document.getElementById('devEmailInput').value = SUPER_ADMIN_EMAIL;
+        switchAuthTab('dev');
+        showToast('Email Super Developer terdeteksi. Masukkan kata sandi Developer.');
+        return;
+      }
+
+      const existing = usersDb.find(u => u.authIdentifier.toLowerCase() === email);
+      if (existing) {
+        if (existing.banned) {
+          currentUser = existing;
+          localStorage.setItem(STORAGE_KEYS.CURRENT_USER, JSON.stringify(currentUser));
+          closeModal('loginModal');
+          syncCurrentUserFromDb();
+          return;
+        }
+        if (existing.password) {
+          const passBox = document.getElementById('userOptionalPasswordBox');
+          const typedPass = document.getElementById('userLoginPasswordInput').value;
+          if (passBox.classList.contains('hidden')) {
+            passBox.classList.remove('hidden');
+            showToast('Masukkan kata sandi akun Anda.');
+            return;
+          }
+          if (typedPass !== existing.password) {
+            showToast('Kata sandi salah!');
+            return;
+          }
+        }
+        finalizeLoginSession(existing, 'Google');
+        return;
+      }
+
+      const autoName = email.split('@')[0].replace(/[._]/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+      pendingAuthUser = {
+        userId: 'user-' + Date.now(),
+        role: 'user',
+        verified: false,
+        banned: false,
+        banReason: '',
+        method: 'Google',
+        authIdentifier: email,
+        displayName: autoName,
+        birthDate: '2005-01-01',
+        avatar: null,
+        password: '',
+        profileCompleted: false
+      };
+      closeModal('loginModal');
+      openOnboardingModal('Google Sign-In');
+    }
+
+    // WhatsApp OTP Push Notification Simulation
+    function sendWhatsAppOtp() {
+      const rawPhone = document.getElementById('phoneInput').value.trim().replace(/\s+/g, '');
+      if (!/^[0-9+]{9,15}$/.test(rawPhone)) {
+        showToast('Masukkan nomor WhatsApp valid (9–15 digit angka).');
+        return;
+      }
+      generatedOtp = String(Math.floor(100000 + Math.random() * 900000));
+      document.getElementById('waOtpMessageCode').textContent = generatedOtp;
+      document.getElementById('waPushNotificationBox').classList.remove('hidden');
+      document.getElementById('otpVerifyBox').classList.remove('hidden');
+      showToast('Pesan masuk WhatsApp diterima di layar!');
+    }
+
+    function copyOtpToInput() {
+      if (!generatedOtp) return;
+      document.getElementById('otpCodeInput').value = generatedOtp;
+      showToast('Kode OTP berhasil disalin ke kolom verifikasi.');
+    }
+
+    function verifyWhatsAppOtp() {
+      const rawPhone = document.getElementById('phoneInput').value.trim();
+      const inputCode = document.getElementById('otpCodeInput').value.trim();
+      if (!generatedOtp || !/^\d{6}$/.test(inputCode) || inputCode !== generatedOtp) {
+        showToast('Kode verifikasi WhatsApp salah atau belum 6 digit.');
+        return;
+      }
+
+      const existing = usersDb.find(u => u.authIdentifier === rawPhone);
+      if (existing) {
+        if (existing.banned) {
+          currentUser = existing;
+          localStorage.setItem(STORAGE_KEYS.CURRENT_USER, JSON.stringify(currentUser));
+          closeModal('loginModal');
+          syncCurrentUserFromDb();
+          return;
+        }
+        finalizeLoginSession(existing, 'WhatsApp OTP');
+        return;
+      }
+
+      // WhatsApp OTP requires manual entry of Full Name and Birth Date
+      pendingAuthUser = {
+        userId: 'user-' + Date.now(),
+        role: 'user',
+        verified: false,
+        banned: false,
+        banReason: '',
+        method: 'WhatsApp OTP',
+        authIdentifier: rawPhone,
+        displayName: '',
+        birthDate: '',
+        avatar: null,
+        password: '',
+        profileCompleted: false
+      };
+      closeModal('loginModal');
+      openOnboardingModal('Verifikasi WhatsApp (Isi Manual Nama & Tanggal Lahir)');
+    }
+
+    function loginAsDeveloper() {
+      const email = document.getElementById('devEmailInput').value.trim().toLowerCase();
+      const pass = document.getElementById('devPasswordInput').value;
+
+      if (email === SUPER_ADMIN_EMAIL.toLowerCase() && pass === SUPER_ADMIN_PASS) {
+        enforceSuperAdminIntegrity();
+        const admin = usersDb.find(u => u.userId === SUPER_ADMIN_ID);
+        finalizeLoginSession(admin, 'Super Developer Utama');
+        return;
+      }
+
+      const coDev = usersDb.find(u => u.authIdentifier.toLowerCase() === email && u.role === 'co_dev' && u.password === pass);
+      if (coDev) {
+        finalizeLoginSession(coDev, 'Co-Developer');
+        return;
+      }
+
+      showToast('Kredensial Developer tidak valid.');
+    }
+
+    function submitForgotPasswordRequest() {
+      const identifier = document.getElementById('forgotAccountIdentifierInput').value.trim();
+      const note = document.getElementById('forgotNoteInput').value.trim();
+      if (identifier.length < 3) {
+        showToast('Masukkan Nama Akun, Email, atau No. WA Anda.');
+        return;
+      }
+
+      const nowStr = new Date().toLocaleString('id-ID', { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' });
+      resetTickets.unshift({
+        id: 'tkt-' + Date.now(),
+        identifier,
+        note: note || 'Permintaan reset kata sandi pengguna',
+        status: 'Menunggu',
+        createdAt: nowStr
+      });
+      localStorage.setItem(STORAGE_KEYS.RESET_TICKETS, JSON.stringify(resetTickets));
+
+      pushNotification('Permintaan Lupa Password', `Akun "${identifier}" meminta reset kata sandi.`);
+      document.getElementById('forgotAccountIdentifierInput').value = '';
+      document.getElementById('forgotNoteInput').value = '';
+      closeModal('loginModal');
+      showToast('Tiket reset kata sandi terkirim ke Developer!');
+    }
+
+    function finalizeLoginSession(userObj, loginMethod) {
+      currentUser = userObj;
+      localStorage.setItem(STORAGE_KEYS.CURRENT_USER, JSON.stringify(currentUser));
+
+      const nowStr = new Date().toLocaleString('id-ID', { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' });
+      loginLogs.unshift({
+        id: 'log-' + Date.now(),
+        name: currentUser.displayName,
+        method: loginMethod,
+        device: getDeviceSummary(),
+        time: nowStr
+      });
+      localStorage.setItem(STORAGE_KEYS.LOGIN_LOGS, JSON.stringify(loginLogs.slice(0, 50)));
+
+      closeModal('loginModal');
+      renderAuthHeader();
+      renderDevControls();
+      renderFeedbackSection();
+      showToast(`Selamat datang, ${currentUser.displayName}!`);
+    }
+
+    // ---------- ONBOARDING PROFIL ----------
+    function openOnboardingModal(badgeLabel = 'Lengkapi Profil') {
+      if (!pendingAuthUser && (!currentUser || currentUser.profileCompleted)) return;
+      const target = pendingAuthUser || currentUser;
+      pendingOnboardingAvatar = target.avatar || null;
+
+      document.getElementById('onboardingMethodBadge').textContent = badgeLabel;
+      const nameInput = document.getElementById('profileDisplayNameInput');
+      const birthInput = document.getElementById('profileBirthDateInput');
+      birthInput.max = new Date().toISOString().split('T')[0];
+
+      nameInput.value = target.displayName || '';
+      birthInput.value = target.birthDate || '';
+      updateOnboardingAvatarInitials();
+      previewCalculatedAge('profileBirthDateInput', 'profileAgePreview');
+      openModal('onboardingModal');
+    }
+
+    function updateOnboardingAvatarInitials() {
+      const preview = document.getElementById('onboardingAvatarPreview');
+      if (pendingOnboardingAvatar) {
+        preview.innerHTML = `<img src="${pendingOnboardingAvatar}" alt="Avatar" class="w-full h-full object-cover" />`;
+      } else {
+        const val = document.getElementById('profileDisplayNameInput').value.trim();
+        preview.textContent = getInitials(val || 'YS');
+      }
+    }
+
+    async function handleAvatarFileChange(event, context) {
+      const file = event.target.files[0];
+      if (!file) return;
+      try {
+        const compressed = await compressImageFile(file, 320, 0.82);
+        if (context === 'onboarding') {
+          pendingOnboardingAvatar = compressed;
+          updateOnboardingAvatarInitials();
+        } else {
+          pendingSettingsAvatar = compressed;
+          document.getElementById('accSettingsAvatarPreview').innerHTML = `<img src="${compressed}" alt="Avatar" class="w-full h-full object-cover" />`;
+        }
+        showToast('Foto profil siap disimpan.');
+      } catch (err) {
+        showToast(String(err));
+      }
+    }
+
+    function calculateAge(birthDateStr) {
+      if (!birthDateStr) return null;
+      const birth = new Date(birthDateStr);
+      const today = new Date();
+      if (isNaN(birth.getTime()) || birth > today) return -1;
+      let age = today.getFullYear() - birth.getFullYear();
+      const m = today.getMonth() - birth.getMonth();
+      if (m < 0 || (m === 0 && today.getDate() < birth.getDate())) age--;
+      return age;
+    }
+
+    function previewCalculatedAge(inputId, outputId) {
+      const birthVal = document.getElementById(inputId).value;
+      const previewEl = document.getElementById(outputId);
+      if (!birthVal) { previewEl.textContent = ''; return; }
+      const age = calculateAge(birthVal);
+      previewEl.textContent = age < 0 ? 'Tanggal lahir tidak valid.' : `Usia terhitung: ${age} tahun`;
+    }
+
+    function saveUserProfile(event) {
+      event.preventDefault();
+      const displayName = document.getElementById('profileDisplayNameInput').value.trim();
+      const birthDate = document.getElementById('profileBirthDateInput').value;
+      if (displayName.length < 3) { showToast('Nama lengkap minimal 3 karakter.'); return; }
+      const age = calculateAge(birthDate);
+      if (age === null || age < 0 || age > 110) { showToast('Masukkan tanggal lahir yang valid.'); return; }
+
+      const base = pendingAuthUser || currentUser;
+      const completedUser = { ...base, displayName, birthDate, avatar: pendingOnboardingAvatar, profileCompleted: true };
+
+      const idx = usersDb.findIndex(u => u.userId === completedUser.userId);
+      if (idx >= 0) usersDb[idx] = completedUser;
+      else usersDb.push(completedUser);
+      saveUsersDb();
+
+      pendingAuthUser = null;
+      pendingOnboardingAvatar = null;
+      closeModal('onboardingModal');
+      finalizeLoginSession(completedUser, completedUser.method);
+    }
+
+    // ---------- PROFILE DROPDOWN & DEV CONTROLS ----------
+    function renderAuthHeader() {
+      const container = document.getElementById('authHeaderContainer');
+      if (!currentUser || !currentUser.profileCompleted) {
+        container.innerHTML = `<button onclick="openModal('loginModal')" class="px-4 py-2 rounded-xl text-xs font-bold text-white accent-gradient hover:opacity-95 transition">Login</button>`;
+        return;
+      }
+
+      const isDev = isUserDeveloper(currentUser);
+      const roleLabel = currentUser.role === 'super_admin' ? 'Super Developer Utama' : currentUser.role === 'co_dev' ? 'Co-Developer' : `Login via ${currentUser.method}`;
+
+      container.innerHTML = `
+        <div class="relative">
+          <button
+            id="profileDropdownTrigger"
+            onclick="toggleProfileDropdown()"
+            class="flex items-center gap-2 pl-1.5 pr-2.5 py-1 rounded-xl theme-card hover:border-cyan-400/60 transition"
+            aria-label="Menu Profil Pengguna"
+          >
+            ${renderAvatarCircle(currentUser.avatar, currentUser.displayName, 'w-8 h-8 text-xs')}
+            <span class="hidden sm:flex text-xs font-bold max-w-[115px] truncate items-center">
+              ${escapeHtml(currentUser.displayName)}
+              ${renderVerifiedBadgeHtml(currentUser.userId, currentUser.displayName)}
+            </span>
+            <svg class="w-4 h-4 theme-text-muted shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" /></svg>
+          </button>
+
+          <div id="profileDropdownMenu" class="hidden absolute right-0 mt-2 w-64 rounded-2xl theme-surface border shadow-2xl py-2 z-50">
+            <div class="px-4 py-2.5 border-b border-white/10">
+              <p class="text-xs font-extrabold truncate flex items-center">
+                ${escapeHtml(currentUser.displayName)}
+                ${renderVerifiedBadgeHtml(currentUser.userId, currentUser.displayName)}
+              </p>
+              <p class="text-[11px] ${isDev ? 'text-amber-400 font-bold' : 'theme-text-muted'} truncate">${escapeHtml(roleLabel)}</p>
+            </div>
+
+            <div class="p-1.5 space-y-1">
+              <button onclick="toggleProfileDropdown(); openMyContentModal();" class="w-full flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-xs font-semibold hover:bg-cyan-500/15 transition text-left">
+                <span>📦 Konten yang Diupload</span>
+              </button>
+
+              <button onclick="toggleProfileDropdown(); openAccountSettingsModal();" class="w-full flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-xs font-semibold hover:bg-cyan-500/15 transition text-left">
+                <span>⚙️ Pengaturan Akun</span>
+              </button>
+
+              ${isDev ? `
+                <button onclick="toggleProfileDropdown(); openDevDashboard('analytics');" class="w-full flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-xs font-extrabold text-amber-400 bg-amber-500/10 hover:bg-amber-500/20 transition text-left">
+                  <span>🛡️ Developer Control Center</span>
+                </button>
+              ` : ''}
+
+              <a href="https://sociabuzz.com/gentamc99" target="_blank" rel="noopener noreferrer" onclick="toggleProfileDropdown()" class="w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-xs font-semibold hover:bg-amber-500/15 transition touch-target">
+                <span>💖 Donasi</span>
+                <span class="text-[10px] text-amber-400 font-bold">↗</span>
+              </a>
+
+              <div class="border-t border-white/10 my-1"></div>
+
+              <button onclick="toggleProfileDropdown(); openModal('logoutConfirmModal');" class="w-full flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-xs font-extrabold text-[#ef4444] hover:bg-red-500/15 transition text-left">
+                <span>🚪 Keluar</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    function confirmLogoutUser() {
+      closeModal('logoutConfirmModal');
+      currentUser = null;
+      pendingAuthUser = null;
+      localStorage.removeItem(STORAGE_KEYS.CURRENT_USER);
+      renderAuthHeader();
+      renderDevControls();
+      renderFeedbackSection();
+      showToast('Anda telah keluar dari akun YOMAN START.');
+    }
+
+    function renderDevControls() {
+      const devBtn = document.getElementById('navbarDevControlBtn');
+      const bellContainer = document.getElementById('notifBellContainer');
+      const isDev = isUserDeveloper(currentUser);
+      const isVerified = currentUser && isUserVerified(currentUser.userId, currentUser.displayName);
+
+      if (isDev) {
+        devBtn.classList.remove('hidden');
+        devBtn.classList.add('inline-flex');
+      } else {
+        devBtn.classList.add('hidden');
+        devBtn.classList.remove('inline-flex');
+      }
+
+      if (isDev || isVerified) {
+        bellContainer.classList.remove('hidden');
+        renderNotificationsList();
+      } else {
+        bellContainer.classList.add('hidden');
+      }
+    }
+
+    function pushNotification(title, message) {
+      const nowStr = new Date().toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
+      devNotifications.unshift({ id: 'notif-' + Date.now(), title, message, time: nowStr, unread: true });
+      localStorage.setItem(STORAGE_KEYS.DEV_NOTIFS, JSON.stringify(devNotifications.slice(0, 35)));
+      renderDevControls();
+    }
+
+    function renderNotificationsList() {
+      const unread = devNotifications.filter(n => n.unread).length;
+      const badge = document.getElementById('notifBellBadge');
+      if (unread > 0) {
+        badge.textContent = unread;
+        badge.classList.remove('hidden');
+      } else {
+        badge.classList.add('hidden');
+      }
+
+      const list = document.getElementById('notifDropdownList');
+      list.innerHTML = devNotifications.length === 0
+        ? `<div class="p-4 text-center text-xs theme-text-muted">Belum ada notifikasi masuk.</div>`
+        : devNotifications.map(n => `
+          <div class="p-3.5 text-xs ${n.unread ? 'bg-amber-500/10' : ''}">
+            <div class="flex items-center justify-between gap-2">
+              <span class="font-bold text-amber-400">${escapeHtml(n.title)}</span>
+              <span class="text-[10px] theme-text-muted">${escapeHtml(n.time)}</span>
+            </div>
+            <p class="theme-text-muted mt-1 leading-relaxed">${escapeHtml(n.message)}</p>
+          </div>
+        `).join('');
+    }
+
+    function markAllNotifsRead() {
+      devNotifications.forEach(n => { n.unread = false; });
+      localStorage.setItem(STORAGE_KEYS.DEV_NOTIFS, JSON.stringify(devNotifications));
+      renderNotificationsList();
+    }
+
+    // ---------- REQUEST MOD WITH PROGRESSIVE COOLDOWN (1m -> 5m -> 15m -> 60m) ----------
+    function openRequestModModal() {
+      if (!currentUser || !currentUser.profileCompleted) {
+        showToast('Silakan login terlebih dahulu untuk mengirim request mod.');
+        openModal('loginModal');
+        return;
+      }
+      openModal('requestModModal');
+      updateRequestCooldownUI();
+    }
+
+    function updateRequestCooldownUI() {
+      clearInterval(cooldownIntervalId);
+      const state = JSON.parse(localStorage.getItem(STORAGE_KEYS.REQ_COOLDOWN) || '{"level":0,"nextAllowed":0}');
+      const banner = document.getElementById('requestCooldownBanner');
+      const timerEl = document.getElementById('requestCountdownDisplay');
+      const submitBtn = document.getElementById('submitRequestBtn');
+
+      const tick = () => {
+        const remainingMs = state.nextAllowed - Date.now();
+        if (remainingMs <= 0) {
+          banner.classList.add('hidden');
+          submitBtn.disabled = false;
+          submitBtn.classList.remove('opacity-50', 'cursor-not-allowed');
+          clearInterval(cooldownIntervalId);
+          return;
+        }
+        banner.classList.remove('hidden');
+        submitBtn.disabled = true;
+        submitBtn.classList.add('opacity-50', 'cursor-not-allowed');
+        const totalSec = Math.ceil(remainingMs / 1000);
+        const mins = String(Math.floor(totalSec / 60)).padStart(2, '0');
+        const secs = String(totalSec % 60).padStart(2, '0');
+        timerEl.textContent = `${mins}:${secs}`;
+      };
+
+      tick();
+      cooldownIntervalId = setInterval(tick, 1000);
+    }
+
+    function submitModRequest(event) {
+      event.preventDefault();
+      if (!currentUser) return;
+      const state = JSON.parse(localStorage.getItem(STORAGE_KEYS.REQ_COOLDOWN) || '{"level":0,"nextAllowed":0}');
+      if (Date.now() < state.nextAllowed) {
+        showToast('Harap tunggu hingga waktu cooldown selesai.');
+        return;
+      }
+
+      const category = document.getElementById('reqCategoryInput').value;
+      const title = document.getElementById('reqTitleInput').value.trim();
+      const details = document.getElementById('reqDetailsInput').value.trim();
+
+      modRequestsList.unshift({
+        id: 'req-' + Date.now(),
+        author: currentUser.displayName,
+        category,
+        title,
+        details,
+        date: new Date().toLocaleDateString('id-ID', { day: '2-digit', month: 'short', year: 'numeric' })
+      });
+      localStorage.setItem(STORAGE_KEYS.MOD_REQUESTS, JSON.stringify(modRequestsList));
+
+      const waitSeconds = COOLDOWN_STEPS_SECONDS[Math.min(state.level, COOLDOWN_STEPS_SECONDS.length - 1)];
+      const nextState = {
+        level: Math.min(state.level + 1, COOLDOWN_STEPS_SECONDS.length - 1),
+        nextAllowed: Date.now() + waitSeconds * 1000
+      };
+      localStorage.setItem(STORAGE_KEYS.REQ_COOLDOWN, JSON.stringify(nextState));
+
+      pushNotification(`Request Baru (${category})`, `${currentUser.displayName}: "${title}" — ${details}`);
+      document.getElementById('statTotalRequests').textContent = modRequestsList.length;
+      event.target.reset();
+      updateRequestCooldownUI();
+      showToast('Request berhasil dikirim ke Developer & Kreator Centang Biru!');
+    }
+
+    // ---------- MY CONTENT & ACCOUNT SETTINGS ----------
+    function openMyContentModal() {
+      if (!currentUser) return;
+      const container = document.getElementById('myUploadedModsList');
+      const myMods = modsList.filter(m => m.authorId === currentUser.userId || m.author === currentUser.displayName);
+      container.innerHTML = myMods.length === 0
+        ? `<div class="p-8 rounded-2xl theme-input text-center space-y-3"><p class="text-sm font-bold">Anda belum mengunggah mod apa pun.</p><button onclick="closeModal('myContentModal'); handleUploadModClick();" class="px-5 py-2.5 rounded-xl text-xs font-bold text-white accent-gradient">+ Upload Mod Pertama Anda</button></div>`
+        : myMods.map(mod => `
+          <div class="p-4 rounded-2xl theme-input flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <div class="flex items-center gap-3.5 min-w-0">
+              <img src="${mod.thumbnail}" alt="${escapeHtml(mod.name)}" class="w-20 h-14 rounded-xl object-cover bg-black shrink-0" />
+              <div class="min-w-0">
+                <p class="font-display text-sm font-bold truncate">${escapeHtml(mod.name)}</p>
+                <p class="text-xs theme-text-muted truncate">${escapeHtml(mod.game)} • ${mod.downloads || 0} unduhan</p>
+              </div>
+            </div>
+            <div class="flex items-center gap-2 shrink-0">
+              <button onclick="closeModal('myContentModal'); openModDetailModal('${mod.id}');" class="px-3.5 py-2 rounded-xl text-xs font-bold theme-surface border">Lihat</button>
+              <button onclick="deleteModById('${mod.id}', true)" class="px-3.5 py-2 rounded-xl text-xs font-bold bg-red-500/15 text-red-500 border border-red-500/35">Hapus</button>
+            </div>
+          </div>
+        `).join('');
+      openModal('myContentModal');
+    }
+
+    function openAccountSettingsModal() {
+      if (!currentUser) return;
+      pendingSettingsAvatar = currentUser.avatar || null;
+      const avatarBox = document.getElementById('accSettingsAvatarPreview');
+      avatarBox.innerHTML = pendingSettingsAvatar ? `<img src="${pendingSettingsAvatar}" alt="Avatar" class="w-full h-full object-cover" />` : getInitials(currentUser.displayName);
+      document.getElementById('accDisplayNameInput').value = currentUser.displayName || '';
+      const birthInput = document.getElementById('accBirthDateInput');
+      birthInput.max = new Date().toISOString().split('T')[0];
+      birthInput.value = currentUser.birthDate || '';
+      previewCalculatedAge('accBirthDateInput', 'accAgePreview');
+      document.getElementById('accNewPasswordInput').value = '';
+      document.getElementById('accConfirmPasswordInput').value = '';
+      document.getElementById('accPasswordStatusBadge').textContent = currentUser.password ? 'Kata Sandi Aktif' : 'Belum Diatur';
+      openModal('accountSettingsModal');
+    }
+
+    function saveAccountSettings(event) {
+      event.preventDefault();
+      if (!currentUser) return;
+      const displayName = document.getElementById('accDisplayNameInput').value.trim();
+      const birthDate = document.getElementById('accBirthDateInput').value;
+      const newPass = document.getElementById('accNewPasswordInput').value;
+      const confirmPass = document.getElementById('accConfirmPasswordInput').value;
+
+      if (displayName.length < 3) { showToast('Nama tampilan minimal 3 karakter.'); return; }
+      const age = calculateAge(birthDate);
+      if (age === null || age < 0 || age > 110) { showToast('Tanggal lahir tidak valid.'); return; }
+      if (newPass || confirmPass) {
+        if (newPass.length < 6) { showToast('Kata sandi baru minimal 6 karakter.'); return; }
+        if (newPass !== confirmPass) { showToast('Konfirmasi kata sandi tidak cocok.'); return; }
+      }
+
+      const oldName = currentUser.displayName;
+      currentUser = { ...currentUser, displayName, birthDate, avatar: pendingSettingsAvatar, password: newPass ? newPass : currentUser.password };
+      const idx = usersDb.findIndex(u => u.userId === currentUser.userId);
+      if (idx >= 0) usersDb[idx] = currentUser;
+      saveUsersDb();
+
+      modsList.forEach(m => {
+        if (m.authorId === currentUser.userId || m.author === oldName) {
+          m.author = displayName;
+          m.authorId = currentUser.userId;
+        }
+      });
+      saveModsToStorage();
+      localStorage.setItem(STORAGE_KEYS.CURRENT_USER, JSON.stringify(currentUser));
+
+      closeModal('accountSettingsModal');
+      renderAuthHeader();
+      renderLobbyHighlights();
+      renderMods();
+      renderFeedbackSection();
+      showToast('Pengaturan akun berhasil diperbarui!');
+    }
+
+    // ---------- MOD UPLOAD, DETAIL & VERIFIED REVIEWS ----------
+    function handleUploadModClick() {
+      if (!currentUser) {
+        showToast('Silakan login terlebih dahulu untuk mengunggah mod.');
+        openModal('loginModal');
+        return;
+      }
+      if (!currentUser.profileCompleted) { openOnboardingModal(); return; }
+      document.getElementById('modAuthorField').value = currentUser.displayName;
+      openModal('uploadModModal');
+    }
+
+    async function handleModThumbnailPreview(event) {
+      const file = event.target.files[0];
+      if (!file) { clearModThumbnailPreview(); return; }
+      try {
+        pendingCompressedThumbnail = await compressImageFile(file, 800, 0.78);
+        document.getElementById('modThumbnailPreviewImg').src = pendingCompressedThumbnail;
+        document.getElementById('modThumbnailPreviewWrapper').classList.remove('hidden');
+      } catch (err) {
+        showToast(String(err));
+        event.target.value = '';
+      }
+    }
+
+    function clearModThumbnailPreview() {
+      pendingCompressedThumbnail = null;
+      const input = document.getElementById('modThumbnailField');
+      if (input) input.value = '';
+      document.getElementById('modThumbnailPreviewWrapper').classList.add('hidden');
+    }
+
+    function submitNewMod(event) {
+      event.preventDefault();
+      if (!currentUser || !currentUser.profileCompleted) return;
+      const name = document.getElementById('modNameField').value.trim();
+      const game = document.getElementById('modGameField').value.trim();
+      const description = document.getElementById('modDescField').value.trim();
+      const file = document.getElementById('modFileField').files[0];
+
+      if (!file) { showToast('Silakan lampirkan file mod Anda.'); return; }
+      if (file.size > MAX_MOD_FILE_BYTES) { showToast('Ukuran file mod maksimal 50 MB.'); return; }
+      const ext = '.' + file.name.split('.').pop().toLowerCase();
+      if (!ALLOWED_MOD_EXTENSIONS.includes(ext)) { showToast(`Ekstensi ${ext} tidak didukung.`); return; }
+
+      const newMod = {
+        id: 'mod-' + Date.now(),
+        name,
+        game,
+        author: currentUser.displayName,
+        authorId: currentUser.userId,
+        description,
+        thumbnail: pendingCompressedThumbnail || createDefaultModThumbnail(name, game),
+        fileName: file.name,
+        fileContent: null,
+        fileUrl: URL.createObjectURL(file),
+        downloads: 1,
+        createdAt: new Date().toLocaleDateString('id-ID', { day: '2-digit', month: 'short', year: 'numeric' }),
+        reviews: []
+      };
+
+      modsList.unshift(newMod);
+      saveModsToStorage();
+      pushNotification('Mod Baru Diunggah', `${currentUser.displayName} mengunggah "${name}" untuk ${game}.`);
+
+      event.target.reset();
+      clearModThumbnailPreview();
+      closeModal('uploadModModal');
+      renderLobbyHighlights();
+      renderMods();
+      switchPage('jelajah-mod');
+      showToast(`Mod "${name}" berhasil dipublikasikan!`);
+    }
+
+    function deleteModById(modId, refreshMyContent = false) {
+      modsList = modsList.filter(m => m.id !== modId);
+      saveModsToStorage();
+      renderLobbyHighlights();
+      renderMods();
+      if (refreshMyContent) openMyContentModal();
+      showToast('Konten mod telah dihapus.');
+    }
+
+    function saveModsToStorage() {
+      try {
+        const persistable = modsList.map(m => ({ ...m, fileUrl: null }));
+        localStorage.setItem(STORAGE_KEYS.MODS, JSON.stringify(persistable));
+      } catch (err) {
+        const lightweight = modsList.map((m, idx) => ({
+          ...m,
+          fileUrl: null,
+          thumbnail: idx === 0 ? m.thumbnail : createDefaultModThumbnail(m.name, m.game)
+        }));
+        localStorage.setItem(STORAGE_KEYS.MODS, JSON.stringify(lightweight));
+      }
+    }
+
+    function getVisibleMods() { return modsList.filter(m => !isUserBanned(m.authorId, m.author)); }
+
+    function getModRatingStats(mod) {
+      const reviews = Array.isArray(mod.reviews) ? mod.reviews : [];
+      if (reviews.length === 0) return { avg: 0, avgText: 'Baru', count: 0 };
+      const total = reviews.reduce((sum, r) => sum + Number(r.rating || 5), 0);
+      const avg = total / reviews.length;
+      return { avg, avgText: avg.toFixed(1), count: reviews.length };
+    }
+
+    function renderStarIcons(rating, sizeClass = 'w-4 h-4') {
+      const full = Math.round(rating);
+      let html = '<span class="inline-flex items-center gap-0.5 text-amber-400">';
+      for (let i = 1; i <= 5; i++) {
+        html += `<svg class="${sizeClass}" fill="${i <= full ? 'currentColor' : 'none'}" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z"/></svg>`;
+      }
+      html += '</span>';
+      return html;
+    }
+
+    function openModDetailModal(modId) {
+      const mod = modsList.find(m => m.id === modId);
+      if (!mod) return;
+      activeDetailModId = modId;
+      pendingReviewScreenshots = [];
+      selectedStarRating = 5;
+      const stats = getModRatingStats(mod);
+
+      document.getElementById('detailModImage').src = mod.thumbnail || createDefaultModThumbnail(mod.name, mod.game);
+      document.getElementById('detailModGame').textContent = mod.game;
+      document.getElementById('detailModRatingBadge').textContent = stats.count > 0 ? `★ ${stats.avgText} (${stats.count} ulasan)` : '★ Belum ada rating';
+      document.getElementById('detailModDate').textContent = mod.createdAt;
+      document.getElementById('detailModTitle').textContent = mod.name;
+      document.getElementById('detailModAuthor').textContent = mod.author;
+      document.getElementById('detailModVerifiedBadge').innerHTML = renderVerifiedBadgeHtml(mod.authorId, mod.author);
+      document.getElementById('detailModDownloads').textContent = `${mod.downloads || 0}x`;
+      document.getElementById('detailModDesc').textContent = mod.description;
+      document.getElementById('detailModDownloadText').textContent = `Download Mod (${mod.fileName})`;
+      document.getElementById('detailModDownloadBtn').onclick = () => downloadModFile(mod.id);
+
+      renderModReviewsSection(mod);
+      openModal('modDetailModal');
+    }
+
+    function downloadModFile(modId) {
+      const mod = modsList.find(m => m.id === modId);
+      if (!mod) return;
+
+      mod.downloads = (mod.downloads || 0) + 1;
+      if (!downloadedModIds.includes(modId)) {
+        downloadedModIds.push(modId);
+        localStorage.setItem(STORAGE_KEYS.DOWNLOADED_IDS, JSON.stringify(downloadedModIds));
+      }
+
+      saveModsToStorage();
+      renderLobbyHighlights();
+      renderMods();
+
+      if (activeDetailModId === modId) {
+        document.getElementById('detailModDownloads').textContent = `${mod.downloads}x`;
+        renderModReviewsSection(mod);
+      }
+
+      const a = document.createElement('a');
+      if (mod.fileUrl) {
+        a.href = mod.fileUrl;
+        a.download = mod.fileName;
+      } else {
+        const content = mod.fileContent || `YOMAN START MOD FILE\nNama Mod: ${mod.name}\nTarget Game: ${mod.game}\nPembuat: ${mod.author}`;
+        const blob = new Blob([content], { type: 'application/octet-stream' });
+        a.href = URL.createObjectURL(blob);
+        a.download = mod.fileName || `${mod.name.replace(/\s+/g, '_')}.txt`;
+      }
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      showToast(`Mengunduh: ${mod.fileName}`);
+    }
+
+    function renderModReviewsSection(mod) {
+      const formContainer = document.getElementById('modReviewFormContainer');
+      const listContainer = document.getElementById('modReviewsList');
+      const countLabel = document.getElementById('detailReviewCountLabel');
+
+      const reviews = Array.isArray(mod.reviews) ? mod.reviews : [];
+      countLabel.textContent = `${reviews.length} Ulasan Terverifikasi`;
+
+      const isLoggedIn = currentUser && currentUser.profileCompleted;
+      const hasDownloaded = downloadedModIds.includes(mod.id);
+
+      if (!isLoggedIn || !hasDownloaded) {
+        formContainer.innerHTML = `
+          <div class="p-4 sm:p-5 rounded-2xl bg-amber-500/10 border border-amber-500/35 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+            <div class="space-y-1">
+              <p class="text-xs sm:text-sm font-bold text-amber-500">Unduh dan gunakan mod ini terlebih dahulu untuk memberikan rating &amp; ulasan</p>
+              <p class="text-[11px] theme-text-muted">${!isLoggedIn ? 'Status: Anda belum login.' : 'Status: Tekan tombol Download Mod di atas untuk membuka ulasan.'}</p>
+            </div>
+            ${!isLoggedIn ? `<button onclick="openModal('loginModal')" class="px-4 py-2.5 rounded-xl text-xs font-bold text-white accent-gradient shrink-0">Login Akun</button>` : ''}
+          </div>
+        `;
+      } else {
+        formContainer.innerHTML = `
+          <form onsubmit="submitModReview(event)" class="p-4 sm:p-5 rounded-2xl theme-input space-y-4">
+            <div class="flex flex-wrap items-center justify-between gap-2">
+              <span class="text-xs font-bold text-emerald-400">✓ Terverifikasi Pengunduh • ${escapeHtml(currentUser.displayName)}</span>
+              <div class="flex items-center gap-1">
+                ${[1, 2, 3, 4, 5].map(star => `
+                  <button type="button" onclick="selectReviewStar(${star})" class="p-1 text-amber-400 hover:scale-110 transition min-h-0">
+                    <svg class="w-6 h-6" fill="${star <= selectedStarRating ? 'currentColor' : 'none'}" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z"/>
+                    </svg>
+                  </button>
+                `).join('')}
+              </div>
+            </div>
+
+            <textarea id="modReviewCommentInput" rows="2" required minlength="4" placeholder="Bagikan pengalaman Anda menggunakan mod ini..." class="w-full p-3 rounded-xl theme-surface border focus:outline-none focus:border-cyan-500"></textarea>
+
+            <div class="space-y-2">
+              <div class="flex flex-wrap items-center justify-between gap-2">
+                <label class="cursor-pointer inline-flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs font-bold bg-violet-500/20 text-violet-400 border border-violet-500/35 hover:bg-violet-500/30 transition touch-target">
+                  <span>Tambah Foto Screenshot (Maks. 2 Foto)</span>
+                  <input type="file" accept="image/jpeg,image/png,image/webp" multiple onchange="handleReviewScreenshotsChange(event)" class="hidden" />
+                </label>
+                <span class="text-[11px] theme-text-muted">${pendingReviewScreenshots.length}/2 foto dipilih</span>
+              </div>
+
+              <div class="${pendingReviewScreenshots.length === 0 ? 'hidden' : 'grid grid-cols-2 gap-3 pt-1'}">
+                ${pendingReviewScreenshots.map((imgSrc, idx) => `
+                  <div class="relative rounded-xl overflow-hidden border border-cyan-500/40 bg-black h-28">
+                    <img src="${imgSrc}" alt="Preview ${idx + 1}" class="w-full h-full object-cover" />
+                    <button type="button" onclick="removePendingReviewScreenshot(${idx})" class="absolute top-1.5 right-1.5 w-7 h-7 rounded-full bg-black/80 text-white text-xs font-bold flex items-center justify-center hover:bg-red-600 min-h-0">✕</button>
+                  </div>
+                `).join('')}
+              </div>
+            </div>
+
+            <button type="submit" class="px-5 py-2.5 rounded-xl text-xs font-bold text-white accent-gradient hover:opacity-95 transition">
+              Kirim Rating &amp; Ulasan
+            </button>
+          </form>
+        `;
+      }
+
+      if (reviews.length === 0) {
+        listContainer.innerHTML = `<div class="p-6 rounded-2xl theme-input text-center text-xs theme-text-muted">Belum ada ulasan untuk mod ini.</div>`;
+        return;
+      }
+
+      listContainer.innerHTML = reviews.map(rev => `
+        <div class="p-4 rounded-2xl theme-input space-y-2.5">
+          <div class="flex items-center justify-between gap-2">
+            <div class="flex items-center gap-2.5">
+              ${renderAvatarCircle(rev.authorAvatar, rev.author, 'w-8 h-8 text-xs')}
+              <div>
+                <p class="text-xs font-bold flex items-center">${escapeHtml(rev.author)}${renderVerifiedBadgeHtml(rev.authorId, rev.author)}</p>
+                <p class="text-[10px] theme-text-muted">${escapeHtml(rev.date)}</p>
+              </div>
+            </div>
+            ${renderStarIcons(rev.rating, 'w-4 h-4')}
+          </div>
+          <p class="text-xs sm:text-sm leading-relaxed theme-text-muted">${escapeHtml(rev.comment)}</p>
+          ${Array.isArray(rev.screenshots) && rev.screenshots.length > 0 ? `
+            <div class="grid grid-cols-2 gap-2.5 pt-1">
+              ${rev.screenshots.map((shot, sIdx) => `
+                <button type="button" onclick="openLightboxImage('${shot}')" class="group relative rounded-xl overflow-hidden border border-white/15 bg-black h-28 sm:h-36 block w-full text-left">
+                  <img src="${shot}" alt="Bukti Screenshot ${sIdx + 1}" class="w-full h-full object-cover group-hover:scale-105 transition duration-300" />
+                  <span class="absolute bottom-1.5 right-1.5 px-2 py-0.5 rounded bg-black/75 text-[10px] text-white font-semibold">Perbesar ↗</span>
+                </button>
+              `).join('')}
+            </div>
+          ` : ''}
+        </div>
+      `).join('');
+    }
+
+    function selectReviewStar(starCount) {
+      selectedStarRating = starCount;
+      const mod = modsList.find(m => m.id === activeDetailModId);
+      if (mod) renderModReviewsSection(mod);
+    }
+
+    async function handleReviewScreenshotsChange(event) {
+      const files = Array.from(event.target.files || []);
+      const remaining = 2 - pendingReviewScreenshots.length;
+      if (remaining <= 0) { showToast('Maksimal 2 foto screenshot per komentar.'); event.target.value = ''; return; }
+      for (const file of files.slice(0, remaining)) {
+        try {
+          const compressed = await compressImageFile(file, 720, 0.75);
+          pendingReviewScreenshots.push(compressed);
+        } catch (err) {
+          showToast(String(err));
+        }
+      }
+      event.target.value = '';
+      const mod = modsList.find(m => m.id === activeDetailModId);
+      if (mod) renderModReviewsSection(mod);
+    }
+
+    function removePendingReviewScreenshot(index) {
+      pendingReviewScreenshots.splice(index, 1);
+      const mod = modsList.find(m => m.id === activeDetailModId);
+      if (mod) renderModReviewsSection(mod);
+    }
+
+    function submitModReview(event) {
+      event.preventDefault();
+      if (!currentUser || !activeDetailModId || !downloadedModIds.includes(activeDetailModId)) return;
+      const mod = modsList.find(m => m.id === activeDetailModId);
+      if (!mod) return;
+      const comment = document.getElementById('modReviewCommentInput').value.trim();
+      if (comment.length < 4) { showToast('Komentar minimal 4 karakter.'); return; }
+
+      if (!Array.isArray(mod.reviews)) mod.reviews = [];
+      mod.reviews.unshift({
+        id: 'rev-' + Date.now(),
+        author: currentUser.displayName,
+        authorId: currentUser.userId,
+        authorAvatar: currentUser.avatar || null,
+        rating: selectedStarRating,
+        comment,
+        screenshots: [...pendingReviewScreenshots],
+        date: new Date().toLocaleDateString('id-ID', { day: '2-digit', month: 'short', year: 'numeric' })
+      });
+
+      pendingReviewScreenshots = [];
+      selectedStarRating = 5;
+      saveModsToStorage();
+      renderLobbyHighlights();
+      renderMods();
+      openModDetailModal(mod.id);
+      showToast('Rating & ulasan berhasil dipublikasikan!');
+    }
+
+    // ---------- RENDER DIRECTORIES, LOBBY, MODS & FEEDBACK ----------
+    function renderGameDirectories() {
+      const container = document.getElementById('gameDirectoriesGrid');
+      container.innerHTML = directoriesList.map(dir => `
+        <div class="theme-card rounded-3xl p-6 sm:p-8 backdrop-blur-md hover:border-cyan-400/50 transition">
+          <div class="flex flex-col md:flex-row items-start md:items-center gap-6 sm:gap-8">
+            <a href="${escapeHtml(dir.url)}" target="_blank" rel="noopener noreferrer" class="group shrink-0 w-full md:w-60 h-40 rounded-2xl bg-zinc-950 border border-white/15 hover:border-cyan-400 flex flex-col items-center justify-center p-4 transition overflow-hidden">
+              <img src="${dir.logo}" alt="Logo ${escapeHtml(dir.title)}" class="max-h-20 w-auto object-contain group-hover:scale-105 transition duration-300" />
+              <span class="mt-2.5 text-[11px] font-semibold text-cyan-400 group-hover:underline">Klik Logo untuk Membuka ↗</span>
+            </a>
+
+            <div class="flex-1 space-y-4">
+              <div class="flex flex-wrap items-center gap-2.5">
+                <h2 class="font-display text-xl sm:text-2xl font-extrabold">${escapeHtml(dir.title)}</h2>
+                <span class="px-3 py-1 rounded-full text-xs font-bold bg-emerald-500/15 text-emerald-500 border border-emerald-500/30">${escapeHtml(dir.badge || 'Direktori Resmi')}</span>
+              </div>
+              <p class="text-sm sm:text-base leading-relaxed theme-text-muted">${escapeHtml(dir.description)}</p>
+              ${Array.isArray(dir.genres) && dir.genres.length > 0 ? `<div class="flex flex-wrap gap-2 pt-1">${dir.genres.map(g => `<span class="px-2.5 py-1 rounded-lg text-xs font-medium theme-input">${escapeHtml(g)}</span>`).join('')}</div>` : ''}
+              <div class="pt-2">
+                <a href="${escapeHtml(dir.url)}" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-2 px-6 py-3 rounded-xl text-sm font-bold text-white accent-gradient hover:opacity-95 transition touch-target">
+                  <span>Kunjungi Sekarang</span>
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3" /></svg>
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function renderLobbyHighlights() {
+      const visible = getVisibleMods();
+      const totalDownloads = visible.reduce((sum, m) => sum + (m.downloads || 0), 0);
+      document.getElementById('statTotalMods').textContent = visible.length;
+      document.getElementById('statTotalDownloads').textContent = totalDownloads.toLocaleString('id-ID');
+      document.getElementById('statTotalRequests').textContent = modRequestsList.length;
+
+      const featuredGrid = document.getElementById('lobbyFeaturedModsGrid');
+      featuredGrid.innerHTML = visible.slice(0, 3).map(mod => {
+        const stats = getModRatingStats(mod);
+        return `
+          <article class="theme-card rounded-2xl overflow-hidden flex flex-col justify-between hover:border-cyan-400/60 transition group">
+            <div>
+              <div onclick="openModDetailModal('${mod.id}')" class="relative h-44 bg-black overflow-hidden cursor-pointer">
+                <img src="${mod.thumbnail}" alt="${escapeHtml(mod.name)}" class="w-full h-full object-cover group-hover:scale-105 transition duration-300" />
+                <span class="absolute top-3 left-3 px-2.5 py-1 rounded-lg text-[11px] font-bold bg-black/75 text-cyan-300 backdrop-blur-sm">${escapeHtml(mod.game)}</span>
+                <span class="absolute top-3 right-3 px-2 py-1 rounded-lg text-[11px] font-bold bg-black/75 text-amber-400 backdrop-blur-sm">★ ${stats.avgText} (${stats.count})</span>
+              </div>
+              <div class="p-5 space-y-2">
+                <h3 onclick="openModDetailModal('${mod.id}')" class="font-display text-base font-bold leading-snug cursor-pointer hover:underline">${escapeHtml(mod.name)}</h3>
+                <p class="text-xs theme-text-muted line-clamp-2">${escapeHtml(mod.description)}</p>
+              </div>
+            </div>
+            <div class="px-5 pb-5 pt-3 border-t border-white/10 flex items-center justify-between text-xs">
+              <span class="theme-text-muted flex items-center">Oleh <strong class="text-violet-400 ml-1">${escapeHtml(mod.author)}</strong>${renderVerifiedBadgeHtml(mod.authorId, mod.author)}</span>
+              <button onclick="openModDetailModal('${mod.id}')" class="font-bold theme-accent-text hover:underline min-h-0">Detail &amp; Ulasan →</button>
+            </div>
+          </article>
+        `;
+      }).join('');
+    }
+
+    function renderMods() {
+      const query = (document.getElementById('modSearchInput')?.value || '').trim();
+      const grid = document.getElementById('modsGrid');
+      const visible = getVisibleMods();
+
+      const filtered = !query
+        ? visible
+        : visible.filter(mod =>
+            computeFuzzyScore(query, mod.name) >= 60 ||
+            computeFuzzyScore(query, mod.author) >= 60 ||
+            computeFuzzyScore(query, mod.game) >= 60
+          );
+
+      if (filtered.length === 0) {
+        grid.innerHTML = `<div class="col-span-full theme-card rounded-2xl p-10 text-center"><p class="text-base font-bold">Mod tidak ditemukan untuk "${escapeHtml(query)}"</p></div>`;
+        return;
+      }
+
+      grid.innerHTML = filtered.map(mod => {
+        const stats = getModRatingStats(mod);
+        return `
+          <article class="theme-card rounded-2xl overflow-hidden flex flex-col justify-between hover:border-cyan-400/60 transition group">
+            <div>
+              <div onclick="openModDetailModal('${mod.id}')" class="relative h-48 bg-black overflow-hidden cursor-pointer">
+                <img src="${mod.thumbnail}" alt="${escapeHtml(mod.name)}" class="w-full h-full object-cover group-hover:scale-105 transition duration-300" />
+                <span class="absolute top-3 left-3 px-2.5 py-1 rounded-lg text-[11px] font-bold bg-black/75 text-cyan-300 backdrop-blur-sm">${escapeHtml(mod.game)}</span>
+                <span class="absolute top-3 right-3 px-2 py-1 rounded-lg text-[11px] font-bold bg-black/75 text-amber-400 backdrop-blur-sm">★ ${stats.avgText} (${stats.count})</span>
+              </div>
+              <div class="p-5 space-y-2.5">
+                <div class="flex items-center justify-between text-[11px] theme-text-muted">
+                  <span>${escapeHtml(mod.createdAt)}</span>
+                  <span>${mod.downloads || 0} unduhan</span>
+                </div>
+                <h3 onclick="openModDetailModal('${mod.id}')" class="font-display text-lg font-bold leading-snug cursor-pointer hover:underline">${escapeHtml(mod.name)}</h3>
+                <p class="text-xs theme-text-muted leading-relaxed line-clamp-3">${escapeHtml(mod.description)}</p>
+              </div>
+            </div>
+            <div class="px-5 pb-5 pt-4 border-t border-white/10 space-y-3">
+              <div class="flex items-center justify-between text-xs">
+                <span class="theme-text-muted">Pembuat:</span>
+                <span class="font-bold text-violet-400 flex items-center">${escapeHtml(mod.author)}${renderVerifiedBadgeHtml(mod.authorId, mod.author)}</span>
+              </div>
+              <div class="grid grid-cols-2 gap-2">
+                <button onclick="openModDetailModal('${mod.id}')" class="py-2.5 px-3 rounded-xl font-bold text-xs theme-input hover:border-cyan-400 transition">Detail &amp; Ulasan</button>
+                <button onclick="downloadModFile('${mod.id}')" class="py-2.5 px-3 rounded-xl font-bold text-xs text-white accent-gradient hover:opacity-95 transition">Download Mod</button>
+              </div>
+            </div>
+          </article>
+        `;
+      }).join('');
+    }
+
+    function renderFeedbackSection() {
+      const formBox = document.getElementById('feedbackFormContainer');
+      const listBox = document.getElementById('feedbackList');
+
+      if (!currentUser || !currentUser.profileCompleted) {
+        formBox.innerHTML = `<div class="p-5 rounded-2xl bg-amber-500/10 border border-amber-500/35 text-center space-y-3"><p class="text-sm font-bold text-amber-500">Silakan login &amp; lengkapi profil terlebih dahulu untuk mengirim masukan</p><button onclick="openModal('loginModal')" class="px-5 py-2.5 rounded-xl text-xs font-bold text-white accent-gradient">Login Sekarang</button></div>`;
+      } else {
+        formBox.innerHTML = `<form onsubmit="submitFeedback(event)" class="space-y-3"><div class="text-xs theme-text-muted">Mengirim sebagai: <strong class="theme-accent-text">${escapeHtml(currentUser.displayName)}</strong></div><textarea id="feedbackTextInput" rows="3" required minlength="5" placeholder="Tulis masukan, saran fitur, atau laporan error Anda..." class="w-full p-3.5 rounded-xl theme-input focus:outline-none focus:border-cyan-500"></textarea><button type="submit" class="px-5 py-2.5 rounded-xl text-xs font-bold text-white accent-gradient">Kirim Masukan</button></form>`;
+      }
+
+      listBox.innerHTML = feedbackList.map(item => `
+        <div class="p-3.5 rounded-xl theme-input space-y-1">
+          <div class="flex items-center justify-between text-xs">
+            <span class="font-bold theme-accent-text flex items-center">${escapeHtml(item.author)}${renderVerifiedBadgeHtml(item.authorId, item.author)}</span>
+            <span class="text-[11px] theme-text-muted">${escapeHtml(item.date)}</span>
+          </div>
+          <p class="text-xs theme-text-muted leading-relaxed">${escapeHtml(item.text)}</p>
+        </div>
+      `).join('');
+    }
+
+    function submitFeedback(event) {
+      event.preventDefault();
+      if (!currentUser || !currentUser.profileCompleted) return;
+      const input = document.getElementById('feedbackTextInput');
+      const text = input.value.trim();
+      if (text.length < 5) { showToast('Masukan minimal 5 karakter.'); return; }
+      feedbackList.unshift({ id: 'fb-' + Date.now(), author: currentUser.displayName, authorId: currentUser.userId, text, date: new Date().toLocaleDateString('id-ID', { day: '2-digit', month: 'short', year: 'numeric' }) });
+      localStorage.setItem(STORAGE_KEYS.FEEDBACK, JSON.stringify(feedbackList));
+      input.value = '';
+      renderFeedbackSection();
+      showToast('Masukan Anda telah terkirim!');
+    }
+
+    // ---------- DEVELOPER CONTROL CENTER (11 FITUR EKSKLUSIF) ----------
+    function openDevDashboard(tabName = 'analytics') {
+      if (!isUserDeveloper(currentUser)) { showToast('Akses ditolak. Khusus Developer YOMAN START.'); return; }
+      document.getElementById('devRoleHeaderLabel').textContent = currentUser.role === 'super_admin' ? '• Super Developer Utama' : '• Co-Developer';
+      openModal('devDashboardModal');
+      switchDevTab(tabName);
+    }
+
+    function switchDevTab(tabName) {
+      activeDevTab = tabName;
+      ['analytics', 'users', 'identity', 'moderation', 'directories', 'tickets'].forEach(t => {
+        const btn = document.getElementById('devTab-' + t);
+        if (!btn) return;
+        if (t === tabName) { btn.classList.add('theme-tab-active'); btn.classList.remove('theme-tab-inactive'); }
+        else { btn.classList.remove('theme-tab-active'); btn.classList.add('theme-tab-inactive'); }
+      });
+
+      const body = document.getElementById('devDashboardBody');
+      if (tabName === 'analytics') renderDevAnalyticsSection(body);
+      else if (tabName === 'users') renderDevUsersSection(body);
+      else if (tabName === 'identity') renderDevIdentitySection(body);
+      else if (tabName === 'moderation') renderDevModerationSection(body);
+      else if (tabName === 'directories') renderDevDirectoriesSection(body);
+      else if (tabName === 'tickets') renderDevTicketsSection(body);
+    }
+
+    function renderDevAnalyticsSection(body) {
+      const sessions = JSON.parse(localStorage.getItem(STORAGE_KEYS.ACTIVE_SESSIONS) || '[]');
+      const totalVisits = visitorStats.reduce((sum, d) => sum + d.visits, 0);
+
+      body.innerHTML = `
+        <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+          <div class="p-4 rounded-2xl theme-input"><p class="text-[11px] theme-text-muted">Kunjungan Mingguan</p><p class="font-display text-xl font-extrabold theme-accent-text mt-1">${totalVisits.toLocaleString('id-ID')}</p></div>
+          <div class="p-4 rounded-2xl theme-input"><p class="text-[11px] theme-text-muted">Sesi Realtime</p><p class="font-display text-xl font-extrabold text-emerald-400 mt-1">${sessions.length} Aktif</p></div>
+          <div class="p-4 rounded-2xl theme-input"><p class="text-[11px] theme-text-muted">Total Pengguna</p><p class="font-display text-xl font-extrabold text-violet-400 mt-1">${usersDb.length}</p></div>
+          <div class="p-4 rounded-2xl theme-input"><p class="text-[11px] theme-text-muted">Request Mod Masuk</p><p class="font-display text-xl font-extrabold text-amber-400 mt-1">${modRequestsList.length}</p></div>
+        </div>
+
+        <div class="p-5 rounded-2xl theme-input space-y-3">
+          <div class="flex items-center justify-between"><h4 class="font-display text-sm font-bold">Grafik Analitik Pengunjung (7 Hari Terakhir)</h4><span class="text-[11px] theme-accent-text font-semibold">Live Canvas</span></div>
+          <canvas id="visitorChartCanvas" width="760" height="210" class="w-full h-44"></canvas>
+        </div>
+
+        <div class="p-5 rounded-2xl theme-input space-y-3">
+          <div class="flex items-center justify-between">
+            <h4 class="font-display text-sm font-bold flex items-center gap-2"><span class="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-ping"></span><span>Monitor Sesi Pengguna Aktif Realtime</span></h4>
+            <button onclick="switchDevTab('analytics')" class="text-xs theme-accent-text font-bold hover:underline min-h-0">Segarkan</button>
+          </div>
+          <div class="space-y-2">
+            ${sessions.map(s => `<div class="p-3 rounded-xl theme-surface border flex flex-wrap items-center justify-between gap-2 text-xs"><div><strong>${escapeHtml(s.name)}</strong> <span class="px-2 py-0.5 rounded bg-cyan-500/15 theme-accent-text text-[10px] font-bold ml-1">${escapeHtml(s.role)}</span></div><span class="theme-text-muted">${escapeHtml(s.device)}</span></div>`).join('')}
+          </div>
+        </div>
+      `;
+      drawVisitorChart();
+    }
+
+    function drawVisitorChart() {
+      const canvas = document.getElementById('visitorChartCanvas');
+      if (!canvas) return;
+      const ctx = canvas.getContext('2d');
+      const w = canvas.width, h = canvas.height;
+      ctx.clearRect(0, 0, w, h);
+      const maxVal = Math.max(...visitorStats.map(d => d.visits), 100);
+      const padLeft = 40, padBottom = 28, padTop = 18;
+      const chartW = w - padLeft - 20, chartH = h - padTop - padBottom;
+      const barWidth = Math.min(46, (chartW / visitorStats.length) * 0.55);
+
+      visitorStats.forEach((item, idx) => {
+        const slotW = chartW / visitorStats.length;
+        const x = padLeft + slotW * idx + (slotW - barWidth) / 2;
+        const barH = (item.visits / maxVal) * chartH;
+        const y = padTop + chartH - barH;
+        const grad = ctx.createLinearGradient(0, y, 0, padTop + chartH);
+        grad.addColorStop(0, '#22d3ee'); grad.addColorStop(1, '#8b5cf6');
+        ctx.fillStyle = grad;
+        ctx.beginPath(); ctx.roundRect(x, y, barWidth, barH, [8, 8, 0, 0]); ctx.fill();
+        ctx.fillStyle = '#94a3b8'; ctx.font = 'bold 12px Inter, sans-serif'; ctx.textAlign = 'center';
+        ctx.fillText(item.day, x + barWidth / 2, h - 8);
+        ctx.fillStyle = '#22d3ee'; ctx.font = 'bold 11px Inter, sans-serif';
+        ctx.fillText(String(item.visits), x + barWidth / 2, y - 5);
+      });
+    }
+
+    function renderDevUsersSection(body) {
+      enforceSuperAdminIntegrity();
+      const filteredUsers = usersDb.filter(u =>
+        u.displayName.toLowerCase().includes(devUserSearchQuery.toLowerCase()) ||
+        u.authIdentifier.toLowerCase().includes(devUserSearchQuery.toLowerCase())
+      );
+
+      body.innerHTML = `
+        <div class="space-y-4">
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+            <h4 class="font-display text-sm font-bold">Live Search &amp; Manajemen Pengguna (${filteredUsers.length})</h4>
+            <input type="search" value="${escapeHtml(devUserSearchQuery)}" oninput="devUserSearchQuery = this.value; renderDevUsersSection(document.getElementById('devDashboardBody'));" placeholder="Cari nama atau email/WA pengguna..." class="px-3.5 py-2 rounded-xl theme-input text-xs sm:w-72" />
+          </div>
+
+          <div class="space-y-3">
+            ${filteredUsers.map(u => {
+              const isSuper = u.userId === SUPER_ADMIN_ID || u.authIdentifier === SUPER_ADMIN_EMAIL;
+              return `
+                <div class="p-4 rounded-2xl theme-input flex flex-col lg:flex-row lg:items-center justify-between gap-4">
+                  <div class="flex items-center gap-3 min-w-0">
+                    ${renderAvatarCircle(u.avatar, u.displayName, 'w-10 h-10 text-xs')}
+                    <div class="min-w-0">
+                      <p class="text-sm font-bold flex flex-wrap items-center gap-1.5">
+                        <span>${escapeHtml(u.displayName)}</span>
+                        ${u.verified ? `<span class="inline-flex items-center justify-center w-4 h-4 rounded-full bg-sky-500 text-white text-[10px]">✓</span>` : ''}
+                        ${isSuper ? `<span class="px-2 py-0.5 rounded bg-amber-500/20 text-amber-400 text-[10px] font-extrabold">SUPER DEVELOPER (KEBAL)</span>` : ''}
+                        ${u.role === 'co_dev' ? `<span class="px-2 py-0.5 rounded bg-violet-500/20 text-violet-400 text-[10px] font-extrabold">CO-DEVELOPER</span>` : ''}
+                        ${u.banned ? `<span class="px-2 py-0.5 rounded bg-red-500/20 text-red-400 text-[10px] font-extrabold">DIBLOKIR</span>` : ''}
+                      </p>
+                      <p class="text-xs theme-text-muted truncate">${escapeHtml(u.authIdentifier)} • Via ${escapeHtml(u.method)}</p>
+                    </div>
+                  </div>
+                  ${isSuper ? `<span class="text-xs font-bold text-amber-400 px-3 py-2 rounded-xl bg-amber-500/10 border border-amber-500/30 shrink-0">🔒 Dilindungi Permanen</span>` : `
+                    <div class="flex flex-wrap items-center gap-2 shrink-0">
+                      <button onclick="toggleUserVerifiedBadge('${u.userId}')" class="px-3 py-2 rounded-xl text-xs font-bold ${u.verified ? 'bg-sky-500/20 text-sky-400 border border-sky-500/40' : 'theme-surface border'}">${u.verified ? '✓ Cabut Centang Biru' : '+ Centang Biru'}</button>
+                      <button onclick="toggleUserCoDevRole('${u.userId}')" class="px-3 py-2 rounded-xl text-xs font-bold ${u.role === 'co_dev' ? 'bg-violet-500/20 text-violet-400 border border-violet-500/40' : 'theme-surface border'}">${u.role === 'co_dev' ? 'Turunkan ke User' : 'Angkat Co-Dev'}</button>
+                      <button onclick="toggleUserBanStatus('${u.userId}')" class="px-3 py-2 rounded-xl text-xs font-bold ${u.banned ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/40' : 'bg-amber-500/20 text-amber-400 border border-amber-500/40'}">${u.banned ? 'Unban Akun' : 'Ban / Blokir'}</button>
+                      <button onclick="deleteUserAccount('${u.userId}')" class="px-3 py-2 rounded-xl text-xs font-bold bg-red-500/20 text-red-500 border border-red-500/40">Hapus Akun</button>
+                    </div>
+                  `}
+                </div>
+              `;
+            }).join('')}
+          </div>
+        </div>
+      `;
+    }
+
+    function toggleUserVerifiedBadge(userId) {
+      if (userId === SUPER_ADMIN_ID) return;
+      const u = usersDb.find(item => item.userId === userId);
+      if (!u) return;
+      u.verified = !u.verified;
+      saveUsersDb(); renderLobbyHighlights(); renderMods(); switchDevTab('users');
+      showToast(u.verified ? `Centang Biru diberikan kepada ${u.displayName}.` : `Centang Biru dicabut.`);
+    }
+
+    function toggleUserCoDevRole(userId) {
+      if (userId === SUPER_ADMIN_ID) return;
+      const u = usersDb.find(item => item.userId === userId);
+      if (!u) return;
+      u.role = u.role === 'co_dev' ? 'user' : 'co_dev';
+      saveUsersDb(); switchDevTab('users');
+      showToast(`${u.displayName} kini berstatus: ${u.role === 'co_dev' ? 'Co-Developer' : 'Pengguna Biasa'}.`);
+    }
+
+    function toggleUserBanStatus(userId) {
+      if (userId === SUPER_ADMIN_ID) return;
+      const u = usersDb.find(item => item.userId === userId);
+      if (!u) return;
+      if (!u.banned) {
+        const reason = prompt(`Alasan pemblokiran untuk "${u.displayName}":`, 'Melanggar panduan komunitas YOMAN START.');
+        if (reason === null) return;
+        u.banned = true;
+        u.banReason = reason.trim() || 'Melanggar panduan komunitas YOMAN START.';
+        showToast(`Akun ${u.displayName} diblokir & kontennya disembunyikan.`);
+      } else {
+        u.banned = false;
+        u.banReason = '';
+        showToast(`Blokir ${u.displayName} dicabut (Unban). Konten tampil kembali!`);
+      }
+      saveUsersDb(); renderLobbyHighlights(); renderMods(); switchDevTab('users');
+    }
+
+    function deleteUserAccount(userId) {
+      if (userId === SUPER_ADMIN_ID) return;
+      const target = usersDb.find(u => u.userId === userId);
+      if (!target || !confirm(`Hapus permanen akun "${target.displayName}"?`)) return;
+      usersDb = usersDb.filter(u => u.userId !== userId);
+      saveUsersDb(); switchDevTab('users');
+      showToast(`Akun ${target.displayName} telah dihapus.`);
+    }
+
+    // Exclusive Developer Logo, Brand Identity & Community Link Editor
+    function renderDevIdentitySection(body) {
+      body.innerHTML = `
+        <form onsubmit="saveSiteIdentityFromDev(event)" class="max-w-2xl space-y-5">
+          <div class="p-4 rounded-2xl bg-amber-500/10 border border-amber-500/35 text-xs space-y-1">
+            <p class="font-bold text-amber-400">Kontrol Eksklusif Identitas &amp; Logo Website</p>
+            <p class="theme-text-muted">Hanya Super Developer dan Co-Developer yang dapat mengganti logo resmi "YS" maupun tautan komunitas.</p>
+          </div>
+
+          <div class="p-4 rounded-2xl theme-input flex flex-col sm:flex-row items-center gap-4">
+            <img src="${siteConfig.logoDataUrl}" alt="Logo Aktif" class="w-20 h-20 rounded-2xl bg-black border border-white/15 object-contain shrink-0" />
+            <div class="space-y-2 flex-1">
+              <p class="text-xs font-bold">Unggah Logo Baru Website (JPG/PNG/SVG/WEBP)</p>
+              <div class="flex flex-wrap gap-2">
+                <label class="cursor-pointer inline-flex items-center px-3.5 py-2 rounded-xl text-xs font-bold bg-cyan-500/20 theme-accent-text border border-cyan-500/35 hover:bg-cyan-500/30 touch-target">
+                  <span>Pilih Gambar Logo</span>
+                  <input type="file" accept="image/*" onchange="uploadExclusiveDevLogo(event)" class="hidden" />
+                </label>
+                <button type="button" onclick="resetToOfficialDefaultLogo()" class="px-3.5 py-2 rounded-xl text-xs font-bold theme-surface border">Pulihkan Logo Default YS</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+            <div>
+              <label class="block text-xs font-bold mb-1">Judul Brand Navbar *</label>
+              <input type="text" id="cfgBrandTitle" value="${escapeHtml(siteConfig.title)}" required class="w-full px-3.5 py-2.5 rounded-xl theme-input" />
+            </div>
+            <div>
+              <label class="block text-xs font-bold mb-1">Tagline Situs *</label>
+              <input type="text" id="cfgBrandTagline" value="${escapeHtml(siteConfig.tagline)}" required class="w-full px-3.5 py-2.5 rounded-xl theme-input" />
+            </div>
+          </div>
+
+          <div>
+            <label class="block text-xs font-bold mb-1">Judul Utama Beranda Lobi *</label>
+            <input type="text" id="cfgHeroTitle" value="${escapeHtml(siteConfig.heroTitle)}" required class="w-full px-3.5 py-2.5 rounded-xl theme-input" />
+          </div>
+
+          <div>
+            <label class="block text-xs font-bold mb-1">Tautan Tombol "Join Community" *</label>
+            <input type="url" id="cfgCommunityUrl" value="${escapeHtml(siteConfig.communityUrl)}" required class="w-full px-3.5 py-2.5 rounded-xl theme-input" />
+          </div>
+
+          <button type="submit" class="px-6 py-3 rounded-xl font-bold text-xs text-white accent-gradient hover:opacity-95 transition">
+            Simpan Identitas &amp; Link Komunitas
+          </button>
+        </form>
+      `;
+    }
+
+    function uploadExclusiveDevLogo(event) {
+      if (!isUserDeveloper(currentUser)) return;
+      const file = event.target.files[0];
+      if (!file || !file.type.startsWith('image/')) { showToast('File harus berupa gambar.'); return; }
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        siteConfig.logoDataUrl = e.target.result;
+        localStorage.setItem(STORAGE_KEYS.SITE_CONFIG, JSON.stringify(siteConfig));
+        applySiteIdentity();
+        switchDevTab('identity');
+        showToast('Logo resmi website berhasil diperbarui!');
+      };
+      reader.readAsDataURL(file);
+    }
+
+    function resetToOfficialDefaultLogo() {
+      siteConfig.logoDataUrl = OFFICIAL_DEFAULT_LOGO;
+      localStorage.setItem(STORAGE_KEYS.SITE_CONFIG, JSON.stringify(siteConfig));
+      applySiteIdentity();
+      switchDevTab('identity');
+      showToast('Logo default YOMAN START (YS) dipulihkan.');
+    }
+
+    function saveSiteIdentityFromDev(event) {
+      event.preventDefault();
+      siteConfig.title = document.getElementById('cfgBrandTitle').value.trim();
+      siteConfig.tagline = document.getElementById('cfgBrandTagline').value.trim();
+      siteConfig.heroTitle = document.getElementById('cfgHeroTitle').value.trim();
+      siteConfig.communityUrl = document.getElementById('cfgCommunityUrl').value.trim();
+      localStorage.setItem(STORAGE_KEYS.SITE_CONFIG, JSON.stringify(siteConfig));
+      applySiteIdentity();
+      showToast('Identitas website & link komunitas disimpan!');
+    }
+
+    function renderDevModerationSection(body) {
+      body.innerHTML = `
+        <div class="space-y-4">
+          <h4 class="font-display text-sm font-bold">Moderasi Mod &amp; Komentar Komunitas (${modsList.length} Mod)</h4>
+          ${modsList.map(mod => {
+            const reviews = Array.isArray(mod.reviews) ? mod.reviews : [];
+            return `
+              <div class="p-4 rounded-2xl theme-input space-y-3">
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                  <div>
+                    <p class="font-display text-sm font-bold">${escapeHtml(mod.name)} <span class="text-xs font-normal theme-text-muted">(${escapeHtml(mod.game)})</span></p>
+                    <p class="text-xs theme-text-muted">Pembuat: <strong>${escapeHtml(mod.author)}</strong> • ${reviews.length} komentar</p>
+                  </div>
+                  <button onclick="deleteModById('${mod.id}', false); switchDevTab('moderation');" class="px-3.5 py-2 rounded-xl text-xs font-bold bg-red-500/20 text-red-500 border border-red-500/40 self-start sm:self-auto">Hapus Mod</button>
+                </div>
+                ${reviews.length > 0 ? `<div class="pl-3 border-l-2 border-white/15 space-y-2">${reviews.map(r => `<div class="flex items-center justify-between gap-2 text-xs p-2 rounded-lg theme-surface"><span class="truncate"><strong>${escapeHtml(r.author)}:</strong> ${escapeHtml(r.comment)}</span><button onclick="devDeleteReview('${mod.id}', '${r.id}')" class="text-red-500 font-bold hover:underline shrink-0 min-h-0">Hapus Komentar</button></div>`).join('')}</div>` : ''}
+              </div>
+            `;
+          }).join('')}
+        </div>
+      `;
+    }
+
+    function devDeleteReview(modId, reviewId) {
+      const mod = modsList.find(m => m.id === modId);
+      if (!mod || !Array.isArray(mod.reviews)) return;
+      mod.reviews = mod.reviews.filter(r => r.id !== reviewId);
+      saveModsToStorage(); renderLobbyHighlights(); renderMods(); switchDevTab('moderation');
+      showToast('Komentar dihapus.');
+    }
+
+    function renderDevDirectoriesSection(body) {
+      pendingDirLogoDataUrl = null;
+      body.innerHTML = `
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+          <form onsubmit="submitNewDirectory(event)" class="lg:col-span-7 p-5 rounded-2xl theme-input space-y-3.5">
+            <h4 class="font-display text-sm font-bold">Tambah Direktori / Link Download Game Baru</h4>
+            <div><label class="block text-xs font-bold mb-1">Nama Situs / Sumber Daya *</label><input type="text" id="newDirTitle" required placeholder="Contoh: FitGirl Repacks Official" class="w-full px-3.5 py-2.5 rounded-xl theme-surface border" /></div>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <div><label class="block text-xs font-bold mb-1">Label Kategori *</label><input type="text" id="newDirBadge" required placeholder="Repack Terpercaya" class="w-full px-3.5 py-2.5 rounded-xl theme-surface border" /></div>
+              <div><label class="block text-xs font-bold mb-1">URL Tujuan *</label><input type="url" id="newDirUrl" required placeholder="https://..." class="w-full px-3.5 py-2.5 rounded-xl theme-surface border" /></div>
+            </div>
+            <div><label class="block text-xs font-bold mb-1">Deskripsi Lengkap *</label><textarea id="newDirDesc" rows="3" required placeholder="Jelaskan keunggulan situs..." class="w-full px-3.5 py-2.5 rounded-xl theme-surface border"></textarea></div>
+            <div><label class="block text-xs font-bold mb-1">Upload Logo / Screenshot Direktori</label><input type="file" accept="image/jpeg,image/png,image/webp" onchange="handleDirLogoUpload(event)" class="w-full text-xs file:mr-2 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-bold file:bg-cyan-500/20 file:text-cyan-400" /></div>
+            <label class="flex items-start gap-2.5 text-xs theme-text-muted cursor-pointer pt-1"><input type="checkbox" required class="mt-1 rounded" /><span>Saya menyatakan tautan ini aman dan mematuhi panduan hak cipta YOMAN START.</span></label>
+            <button type="submit" class="w-full py-3 rounded-xl font-bold text-xs text-white accent-gradient">Tambahkan ke Tempat Download Game PC</button>
+          </form>
+
+          <div class="lg:col-span-5 space-y-3">
+            <h4 class="font-display text-sm font-bold">Direktori Aktif (${directoriesList.length})</h4>
+            ${directoriesList.map(d => `<div class="p-4 rounded-2xl theme-input flex items-center justify-between gap-3"><div class="min-w-0"><p class="font-bold text-sm truncate">${escapeHtml(d.title)}</p><p class="text-xs theme-text-muted truncate">${escapeHtml(d.url)}</p></div>${d.id !== 'dir-ankergames' ? `<button onclick="deleteDirectory('${d.id}')" class="px-3 py-1.5 rounded-lg text-xs font-bold bg-red-500/20 text-red-500 shrink-0">Hapus</button>` : `<span class="text-[10px] font-bold text-cyan-400 shrink-0">Utama</span>`}</div>`).join('')}
+          </div>
+        </div>
+      `;
+    }
+
+    async function handleDirLogoUpload(event) {
+      const file = event.target.files[0];
+      if (!file) return;
+      try { pendingDirLogoDataUrl = await compressImageFile(file, 480, 0.8); showToast('Logo direktori dimuat.'); }
+      catch (err) { showToast(String(err)); }
+    }
+
+    function submitNewDirectory(event) {
+      event.preventDefault();
+      const title = document.getElementById('newDirTitle').value.trim();
+      const badge = document.getElementById('newDirBadge').value.trim();
+      const url = document.getElementById('newDirUrl').value.trim();
+      const description = document.getElementById('newDirDesc').value.trim();
+      directoriesList.push({ id: 'dir-' + Date.now(), title, badge, logo: pendingDirLogoDataUrl || `https://placehold.co/320x140/09090b/22d3ee?text=${encodeURIComponent(title.slice(0, 18))}`, url, description, genres: ['PC Games', 'Verified Link'] });
+      localStorage.setItem(STORAGE_KEYS.DIRECTORIES, JSON.stringify(directoriesList));
+      renderGameDirectories(); switchDevTab('directories');
+      showToast(`Direktori "${title}" ditambahkan!`);
+    }
+
+    function deleteDirectory(dirId) {
+      directoriesList = directoriesList.filter(d => d.id !== dirId);
+      localStorage.setItem(STORAGE_KEYS.DIRECTORIES, JSON.stringify(directoriesList));
+      renderGameDirectories(); switchDevTab('directories');
+      showToast('Direktori dihapus.');
+    }
+
+    function renderDevTicketsSection(body) {
+      body.innerHTML = `
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+          <div class="lg:col-span-6 space-y-3">
+            <h4 class="font-display text-sm font-bold">Tiket Lupa Kata Sandi (${resetTickets.length})</h4>
+            ${resetTickets.length === 0 ? `<p class="text-xs theme-text-muted">Tidak ada tiket reset sandi.</p>` : resetTickets.map(t => `
+              <div class="p-4 rounded-2xl theme-input space-y-2.5">
+                <div class="flex items-center justify-between gap-2"><span class="text-xs font-extrabold">${escapeHtml(t.identifier)}</span><span class="px-2 py-0.5 rounded text-[10px] font-bold ${t.status === 'Selesai' ? 'bg-emerald-500/20 text-emerald-400' : 'bg-amber-500/20 text-amber-400'}">${escapeHtml(t.status)}</span></div>
+                <p class="text-xs theme-text-muted">${escapeHtml(t.note)} • ${escapeHtml(t.createdAt)}</p>
+                ${t.status !== 'Selesai' ? `<div class="flex gap-2 pt-1"><input type="text" id="newPassFor-${t.id}" placeholder="Sandi baru (min 6 char)" class="flex-1 px-3 py-2 rounded-xl theme-surface border text-xs" /><button onclick="resolvePasswordResetTicket('${t.id}')" class="px-3.5 py-2 rounded-xl text-xs font-bold text-white accent-gradient shrink-0">Setel Sandi</button></div>` : ''}
+              </div>
+            `).join('')}
+          </div>
+
+          <div class="lg:col-span-6 space-y-3">
+            <h4 class="font-display text-sm font-bold">Log Perangkat &amp; Info Login Pengguna</h4>
+            <div class="space-y-2 max-h-96 overflow-y-auto pr-1">
+              ${loginLogs.map(log => `<div class="p-3.5 rounded-xl theme-input text-xs flex flex-col sm:flex-row sm:items-center justify-between gap-1"><div><p class="font-bold">${escapeHtml(log.name)} <span class="font-normal theme-accent-text">(${escapeHtml(log.method)})</span></p><p class="theme-text-muted text-[11px]">${escapeHtml(log.device)}</p></div><span class="text-[11px] theme-text-muted shrink-0">${escapeHtml(log.time)}</span></div>`).join('')}
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    function resolvePasswordResetTicket(ticketId) {
+      const ticket = resetTickets.find(t => t.id === ticketId);
+      if (!ticket) return;
+      const newPass = (document.getElementById('newPassFor-' + ticketId)?.value || '').trim();
+      if (newPass.length < 6) { showToast('Kata sandi baru minimal 6 karakter.'); return; }
+      const targetUser = usersDb.find(u => ticket.identifier.toLowerCase().includes(u.displayName.toLowerCase()) || ticket.identifier.toLowerCase().includes(u.authIdentifier.toLowerCase()));
+      if (targetUser && targetUser.userId !== SUPER_ADMIN_ID) { targetUser.password = newPass; saveUsersDb(); }
+      ticket.status = 'Selesai';
+      localStorage.setItem(STORAGE_KEYS.RESET_TICKETS, JSON.stringify(resetTickets));
+      switchDevTab('tickets');
+      showToast(`Kata sandi baru untuk "${ticket.identifier}" ditetapkan!`);
+    }
+
+    function escapeHtml(str) {
+      return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#039;');
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <rect width="512" height="512" rx="64" fill="#050507"/>
+  <g fill="#ffffff">
+    <!-- Left Y geometric wing -->
+    <polygon points="145,155 182,135 182,225 224,200 224,110 250,95 250,275 182,315 182,272 224,247 224,225 145,270"/>
+    <!-- Right S geometric wing -->
+    <polygon points="262,95 367,155 367,195 292,152 292,188 367,232 367,315 262,255 262,215 337,258 337,222 262,178"/>
+  </g>
+  <text x="256" y="382" fill="#ffffff" font-family="Arial Black, Impact, sans-serif" font-size="42" font-weight="900" letter-spacing="3" text-anchor="middle">YOMAN START</text>
+  <line x1="72" y1="414" x2="108" y2="414" stroke="#0ea5e9" stroke-width="4" stroke-linecap="round"/>
+  <text x="256" y="419" fill="#e2e8f0" font-family="Arial, sans-serif" font-size="14" font-weight="700" letter-spacing="2.2" text-anchor="middle">TUTORIAL • GAME • SOLUSI ERROR</text>
+  <line x1="404" y1="414" x2="440" y2="414" stroke="#0ea5e9" stroke-width="4" stroke-linecap="round"/>
+</svg>
